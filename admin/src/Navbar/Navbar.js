@@ -19,7 +19,7 @@ export default class Navbar extends Component{
                 selected:false
             },
             {name:"Order",path:"/orders",type:0,menuicon:"mdi mdi-shopping menu-icon",selected:false,id:"order"},
-            {name:"Inventories",path:"/",type:0,menuicon:"mdi mdi-store  menu-icon",selected:false,id:"inventory"},
+            {name:"Inventory",path:"/inventory",type:0,menuicon:"mdi mdi-store  menu-icon",selected:false,id:"inventory"},
             {name:"Deleveries",path:"/",type:0,menuicon:"mdi mdi-truck-delivery menu-icon",selected:false,id:"delevery"},
         ]
     };
