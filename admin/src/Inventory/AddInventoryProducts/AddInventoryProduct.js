@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-
+import Cookies from 'universal-cookie';
 
 export default class AddInventoryProducts extends Component{
     constructor(props){
@@ -13,51 +13,37 @@ export default class AddInventoryProducts extends Component{
         quantity:0,
         name:"",
         measurement:"",
-        productdata:[]
+        productdata:[],
+        listOfProduct:[]
     };
 
     componentDidMount=()=>{
-        
+        this.loadProductData();
+    }
+
+    loadProductData=()=>{
+        const  data = [];
+        const cookies = new Cookies();
+        const token = cookies.get("token");
+        let url = "http://localhost:8080/product/getallproducts?token="+token;
+
+        fetch(url,{
+            method: 'GET', 
+            headers: {
+                'Content-Type': 'application/json',
+                'accept':'application/json'
+            },
+        }).then(response=>{
+            return response.json();
+        }).then(data=>{
+           this.setState({listOfProduct:data.product})
+        });
     }
 
     getNamesofProducts=()=>{
-        const  data = [
-            
-                {
-                    id:200,
-                    price:300,
-                    name:"Gemini oil 200",
-                    measurement:"gram",
-                    quantity:500
-                },
-                {
-                    id:201,
-                    price:200,
-                    name:"Gemini oil 500 ml",
-                    measurement:"litre",
-                    quantity:300
-                },
-                {
-                    id:202,
-                    price:200,
-                    name:"Gemini oil 500 ml",
-                    measurement:"litre",
-                    quantity:300
-                },
-                {
-                    id:203,
-                    price:200,
-                    name:"Gemini oil 500 ml",
-                    measurement:"litre",
-                    quantity:300
-                }
-            
-        ];
-        //fetching to server ..... 
-
-        let products = data.map(
+        let products = this.state.listOfProduct.map(
             product=>{
-                return(<option value={product.id} id={product.id} title={product.name} about={product.measurement}>{product.name}</option>);
+                return(<option value={product._id} id={product._id} title={product.name} about={product.measurement}>{product.name}</option>);
             }
         );
         return products;
@@ -66,7 +52,7 @@ export default class AddInventoryProducts extends Component{
     addProduct=(e)=>{
         e.preventDefault();
         let list = this.state.products;
-        list.push({name:this.state["name"],id:this.state["id"],quantity:this.state["quantity"],measurement:this.state["measurement"]});
+        list.push({name:this.state["name"],id:this.state["id"],productid:this.state["id"],quantity:this.state["quantity"],measurement:this.state["measurement"]});
         this.setState({products:list});
     }
 
@@ -114,11 +100,45 @@ export default class AddInventoryProducts extends Component{
 
     addToInventory=(e)=>{
         e.preventDefault();
-        console.log();
+        
+        const cookies = new Cookies();
+        const token = cookies.get("token");
+        let url = "http://localhost:8080/admin/inventory/addproductstoinventory";
+        const json = JSON.stringify(
+            {
+                products:this.state.products,
+                token:token
+            }
+        );
+
+        fetch(url,
+            {
+                method:"POST",
+                headers:{
+                    "Content-type":"application/json",
+                    "Accept":"application/json"
+                },
+                body:json
+            }
+        ).then(data=>{
+        
+            if(data.status === 200){
+                return data.json();
+            }else{
+                alert("Something went wrong!");
+                return;
+            }
+        
+        }).then(res=>{
+            
+            this.setState({products:[]});
+
+        }).catch(e=>{console.error(e)})
+
         //post data...
         //if response is 200... then
         //this.props.addProductinInventory(this.state.products);
-        //this.setState({product:[]});
+        
     }
 
     render(){

@@ -1,4 +1,5 @@
 import React,{Component} from 'react';
+import Cookies from 'universal-cookie';
 
 export default class EditProduct extends Component{
   
@@ -6,7 +7,10 @@ export default class EditProduct extends Component{
       product:{},
       name:"",
       manufacturer:"",
-      description:""
+      description:"",
+      measurement:"",
+      id:"",
+      server:"http://localhost:8080/"
   };
 
   constructor(props) {
@@ -23,7 +27,9 @@ export default class EditProduct extends Component{
         product:this.props.edit,
         name:this.props.edit.name,
         manufacturer:this.props.edit.manufacturer,
-        description:this.props.edit.description
+        description:this.props.edit.description,
+        measurement:this.props.edit.measurement,
+        id:this.props.edit._id
     });
   }
 
@@ -34,12 +40,53 @@ export default class EditProduct extends Component{
 
   onSave=(e)=>{
     e.preventDefault();
+    
+    const cookies = new Cookies();
+    const token = cookies.get("token");
+
+    let json = JSON.stringify({
+        id:this.state.id,
+        name:this.state.name,
+        description:this.state.description,
+        manufacturer:this.state.manufacturer,
+        measurement:this.state.measurement,
+        token:token
+    });  
+
+    fetch(this.state.server+"admin/updateproduct",
+        {
+            method:"PUT",
+            headers:{
+                'Content-Type': 'application/json',
+                'accept':'application/json'
+            },
+            body:json
+        }
+    ).then(data=>{
+        if(data.status==200)    
+            return data.json();
+    }).then(res=>{
+        if(res){
+            this.props.changeProductInforamtion({
+                name:this.state.name,
+                measurement:this.state.measurement,
+                manufacturer:this.state.manufacturer,
+                description:this.state.description,
+                id:this.state.id
+            });
+            this.props.changeToList();
+        }
+        
+    }).catch(e=>{
+        console.log(e);
+        alert("Something gone wrong!");
+    });
   }
 
   render(){
       return (
           <>
-            <div className="card-title d-flex justify-content-between align-items-center"> Edit Product
+            <div className="card-title d-flex justify-content-between align-items-center"> Product Inforamtion
                 <button onClick={this.changeToList} className="btn btn-sm btn-icon btn-link">
                     <i className="mdi mdi-close text-dark"></i>
                 </button>
@@ -52,9 +99,14 @@ export default class EditProduct extends Component{
               
                 <div class="form-group">
                     <label for="exampleInputCity1">Manufacturer</label>
-                    <input type="text" onChange={this.onChange} name="manufacturer" class="form-control" value={this.state.manufacturer}  id="exampleInputCity1" placeholder="Location"/>
+                    <input type="text" onChange={this.onChange} name="manufacturer" class="form-control" value={this.state.manufacturer}  id="exampleInputCity1" placeholder="Manufacturer"/>
                 </div>
               
+                <div class="form-group">
+                    <label for="exampleInputCity1">Measurement</label>
+                    <input type="text" onChange={this.onChange} name="measurement" class="form-control" value={this.state.measurement}  id="exampleInputCity1" placeholder="Measurement"/>
+                </div>
+
                 <div class="form-group">
                     <label for="exampleInputEmail3">Description</label>
                     <textarea type="text" onChange={this.onChange} name="description" class="form-control" value={this.state.description} id="exampleInputEmail3" placeholder="Product description"></textarea>

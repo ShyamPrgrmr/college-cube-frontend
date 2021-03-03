@@ -1,4 +1,5 @@
 import React,{Component} from 'react';
+import Cookies from 'universal-cookie';
 
 export default class OrderItem extends Component{
 
@@ -7,17 +8,67 @@ export default class OrderItem extends Component{
         this.state = props;
     }
 
+    state={
+        server:"http://localhost:8080/"
+    }
+
     
     componentDidMount=()=>{
     }
 
+    componentDidUpdate=(props,state)=>{
+
+    }
+
+
+    onClick=(e)=>{
+        e.preventDefault();
+        const cookies = new Cookies();
+        const token = cookies.get("token");
+        const orderid = this.props.orderid;
+        let status = 0;
+
+        if(e.target.value==="1"){
+           status=1;
+        }
+        else if(e.target.value==="0"){
+            status=0;
+        }
+
+        const json = JSON.stringify(
+            {
+                token:token,
+                orderid:orderid,
+                status:status
+            }
+        );
+
+        fetch("http://localhost:8080/admin/order/setdelivery",
+        {
+            method:"POST",
+            headers:{
+                "Content-type":"application/json",
+                "Accept":"application/json"
+            },
+            body:json
+        }).then(
+            data=>{return data.json();}
+        ).then(res=>{
+
+            if(!res){ alert("Error!"); return; }
+            this.props.changeOrderStatus(orderid,status);
+            this.setState({orderstatus:status});
+
+        }).catch(e=>{console.error(e);})
+
+    }
     
 
     displayButton=()=>{
         if(this.state.orderstatus===-1){
             return <>
-                <button className="btn btn-primary btn-sm" style={{marginRight:3}}>Accept</button>
-                <button className="btn btn-danger btn-sm">Reject</button>
+                <button className="btn btn-primary btn-sm" style={{marginRight:3}} onClick={this.onClick} value={1}>Accept</button>
+                <button className="btn btn-danger btn-sm" onClick={this.onClick} value={0}>Reject</button>
             </>;
         }
         else if(this.state.orderstatus===0){

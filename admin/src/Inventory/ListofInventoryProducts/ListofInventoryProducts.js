@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-
+import Cookies from 'universal-cookie'; 
 
 export default class AddInventoryProducts extends Component{
     constructor(props){
@@ -8,41 +8,31 @@ export default class AddInventoryProducts extends Component{
 
     state={
         products:[],
-        currentPage:1
+        currentPage:1,
+        server:"http://localhost:8080/"
     };
 
     componentDidMount=()=>{
-        let data=[
-            {
-                id:200,
-                price:300,
-                name:"Gemini oil 200",
-                measurement:"gram",
-                quantity:500
-            },
-            {
-                id:201,
-                price:200,
-                name:"Gemini oil 500 ml",
-                measurement:"litre",
-                quantity:300
-            },
-            {
-                id:202,
-                price:200,
-                name:"Gemini oil 500 ml",
-                measurement:"litre",
-                quantity:300
-            },
-            {
-                id:203,
-                price:200,
-                name:"Gemini oil 500 ml",
-                measurement:"litre",
-                quantity:300
+        this.loadProducts();
+    }
+
+    loadProducts=()=>{
+        const cookies = new Cookies();
+        const token = cookies.get("token");
+
+        fetch(this.state.server+"admin/inventory/viewproductsininventory?token="+token+"&page="+this.state.currentPage,
+        {
+            method:"GET",
+            headers:{
+                "Accept":"application/json"
             }
-        ];
-        this.setState({products:data});
+        }
+        ).
+        then(data=> { if(data.status===200) return data.json(); else alert("Something went wrong"); }).
+        then(res=>{
+            this.setState({products:res});
+        }).
+        catch(e=>{console.error(e)});   
     }
     
 
@@ -67,48 +57,20 @@ export default class AddInventoryProducts extends Component{
 
     reload=(e)=>{
         e.preventDefault();
-        let data=[
-            {
-                id:200,
-                price:300,
-                name:"Gemini oil 200",
-                measurement:"gram",
-                quantity:500
-            },
-            {
-                id:201,
-                price:200,
-                name:"Gemini oil 3000 ml",
-                measurement:"litre",
-                quantity:300
-            },
-            {
-                id:202,
-                price:200,
-                name:"Gemini oil 200 ml",
-                measurement:"litre",
-                quantity:300
-            },
-            {
-                id:203,
-                price:200,
-                name:"Gemini oil 1500 ml",
-                measurement:"litre",
-                quantity:300
-            }
-        ];
-        this.setState({products:data});
+        this.loadProducts();
     }
 
 
 
-    previousButtonClicked=(e)=>{
+    previousButtonClicked=async (e)=>{
         e.preventDefault();
-        this.setState({currentPage:this.state.currentPage-1});
+        await this.setState({currentPage:this.state.currentPage-1});
+        this.loadProducts();
     }
-    nextButtonClicked=(e)=>{
+    nextButtonClicked=async (e)=>{
         e.preventDefault();
-        this.setState({currentPage:this.state.currentPage+1});
+        await this.setState({currentPage:this.state.currentPage+1});
+        this.loadProducts();
     }
 
     currentPage=()=>{

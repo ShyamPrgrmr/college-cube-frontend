@@ -1,7 +1,7 @@
 
 import './App.css';
 import React,{Component} from 'react';
-import { BrowserRouter, Switch, Route, Redirect, Link } from 'react-router-dom'
+import { Switch, Route, Redirect, Link } from 'react-router-dom'
 import AddProduct from './Products/AddProduct/AddProduct';
 import Error404 from './error/Error404';
 import ListProduct from './Products/ListProduct/ListProduct';
@@ -10,6 +10,7 @@ import Navbar from './Navbar/Navbar';
 import TopNavbar from './Navbar/TopNavabar';
 import Inventory from './Inventory/Inventory';
 import LoginPage from './LoginPage/LoginPage';
+import Deliveries from './Deliveries/Deliveries';
 
 export default class App extends Component{
   
@@ -29,13 +30,20 @@ export default class App extends Component{
     else this.setState({isLogin:true});
   }
 
+  toTop=(e)=>{  
+    e.preventDefault();
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop=0;
+  }
 
   pageContent=()=>{
     return this.state.isLogin ?
       <>
-        <button className="btn btn-priamry btn-small to-top">
-          <i className="mdi mdi-arrow-up-bold"></i> 
+        
+        <button type="button" class="btn btn-inverse-dark btn-rounded btn-icon to-top" onClick={this.toTop}>
+          <i class="mdi mdi-arrow-up-bold"></i>
         </button>
+        
         <TopNavbar name={this.state.name} route={this.state.route}></TopNavbar>
         <div className="container-fluid page-body-wrapper">
             <Navbar changeRoute={this.changeRoute} routeprops={this.props}></Navbar>
@@ -81,6 +89,7 @@ export default class App extends Component{
             <Route path='/products/addproduct' component={AddProduct} routeprops={this.props}></Route>
             <Route path='/products/listproducts' component={ListProduct} routeprops={this.props}></Route>
             <Route path='/orders' component={Order} routeprops={this.props}></Route>
+            <Route path='/deliveries' component={Deliveries} routeprops={this.props}></Route>
             <Route path='/inventory' component={Inventory} routeprops={this.props}></Route>
             <Route component={Error404}></Route>
         </Switch>

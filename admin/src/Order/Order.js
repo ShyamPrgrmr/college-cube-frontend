@@ -1,10 +1,15 @@
 import React,{Component} from 'react';
 import OrderItem from './Order Item/OrderItem';
 import './Order.css';
+import Cookies from 'universal-cookie';
 
 export default class Order extends Component{
     
-    state={orders:[],filterOrder:[]};
+    state={
+        orders:[],
+        filterOrder:[],
+        server:"http://localhost:8080/"
+    };
     constructor(props){
         super(props);
     }
@@ -68,181 +73,50 @@ export default class Order extends Component{
         }
 
     }
+
+    changeOrderStatus=(id,status)=>{
+        this.getOrder();
+    }
     
     componentDidMount=()=>{
-        let orders = [
-            {
-                userid: "5ffd63f9d49fd14098ba6251",
-                username: {
-                    firstname: "Shyam",
-                    lastname: "Pradhan"
-                },
-                usermobile: {
-                    mob_1: "7387954553"
-                },
-                useraddress: {
-                    route: "wadali camp amravati",
-                    pincode: 444606
-                },
-                products: [
-                    {
-                        name: "test",
-                        quantity: 3,
-                        price: 600,
-                        id: "6010dea6505d014bd4e9ef03"
-                    },
-                    {
-                        name: "test",
-                        quantity: 3,
-                        price: 600,
-                        id: "6010dea6505d014bd4e9ef03"
-                    },
-                    {
-                        name: "test",
-                        quantity: 3,
-                        price: 600,
-                        id: "6010dea6505d014bd4e9ef03"
-                    }
-                ],
-                totalprice: 1800,
-                placedat: "2021-01-27T04:19:13.202Z",
-                orderid: "6010e9c13ddd841022270a63fa5",
-                orderstatus: 3
-            },
-            {
-                userid: "5ffd63f9d49fd14098ba6251",
-                username: {
-                    firstname: "Shyam",
-                    lastname: "Pradhan"
-                },
-                usermobile: {
-                    mob_1: "7387954553"
-                },
-                useraddress: {
-                    route: "wadali camp amravati",
-                    pincode: 444606
-                },
-                products: [
-                    {
-                        name: "test",
-                        quantity: 3,
-                        price: 600,
-                        id: "6010dea6505d014bd4e9ef03"
-                    },
-                    {
-                        name: "test",
-                        quantity: 3,
-                        price: 600,
-                        id: "6010dea6505d014bd4e9ef03"
-                    },
-                    {
-                        name: "test",
-                        quantity: 3,
-                        price: 600,
-                        id: "6010dea6505d014bd4e9ef03"
-                    }
-                ],
-                totalprice: 1800,
-                placedat: "2021-01-27T04:19:13.202Z",
-                orderid: "6010e9sssc13841022270a63fa5",
-                orderstatus: 1
-            },
-            {
-                userid: "5ffd63f9d49fd14098ba6251",
-                username: {
-                    firstname: "Shyam",
-                    lastname: "Pradhan"
-                },
-                usermobile: {
-                    mob_1: "7387954553"
-                },
-                useraddress: {
-                    route: "wadali camp amravati",
-                    pincode: 444606
-                },
-                products: [
-                    {
-                        name: "test",
-                        quantity: 3,
-                        price: 600,
-                        id: "6010dea6505d014bd4e9ef03"
-                    },
-                    {
-                        name: "test",
-                        quantity: 3,
-                        price: 600,
-                        id: "6010dea6505d014bd4e9ef03"
-                    },
-                    {
-                        name: "test",
-                        quantity: 3,
-                        price: 600,
-                        id: "6010dea6505d014bd4e9ef03"
-                    }
-                ],
-                totalprice: 1800,
-                placedat: "2021-01-27T04:19:13.202Z",
-                orderid: "6010e9c13841022270a63fa5",
-                orderstatus: -1
-            },
-            {
-                userid: "5ffd63f9d49fd14098ba6251",
-                username: {
-                    firstname: "Shyam",
-                    lastname: "Pradhan"
-                },
-                usermobile: {
-                    mob_1: "7387954553"
-                },
-                useraddress: {
-                    route: "wadali camp amravati",
-                    pincode: 444606
-                },
-                products: [
-                    {
-                        name: "test",
-                        quantity: 3,
-                        price: 600,
-                        id: "6010dea650eeee5d014bd4e9ef03"
-                    },
-                    {
-                        name: "test",
-                        quantity: 3,
-                        price: 600,
-                        id: "6010dea6505d014bd4e9ef03"
-                    },
-                    {
-                        name: "test",
-                        quantity: 3,
-                        price: 600,
-                        id: "6010dea6505d014bd4e9ef03"
-                    }
-                ],
-                totalprice: 1800,
-                placedat: "2021-01-27T04:19:13.202Z",
-                orderid: "6010e9c1384102227hhh0a63fa5",
-                orderstatus: 0
-            }
+        this.getOrder();
+    }
 
+    getOrder=()=>{
+        let order=[];
+        const cookies = new Cookies();
+        const token = cookies.get("token");
+        fetch(this.state.server+"admin/order/getallorders?token="+token,
+        {
+            method:"GET",
+            headers:{
+                "Content-type":"application/json",
+                "Accept":"application/json"
+            },
+        }).then(data=>{
+            if(data.status===200)
+                return data.json();
+            else
+                alert("Something went too wrong!");
+        }).then(res=>{
+            this.setState({orders:res,filterOrder:res});
+        }).catch(err=>{
 
-        ];
-
-        this.setState({orders:orders,filterOrder:orders});
+        });
     }
 
     getList=()=>{
         const orders = this.state.filterOrder;
         
-        
         let orderarr = orders.map(
             (data)=>{
                 return(
-                    <OrderItem {...data} key={data.orderid}></OrderItem>
+                    <OrderItem changeOrderStatus={this.changeOrderStatus} {...data} key={data.orderid}></OrderItem>
                 );
             }
         );
         return orderarr;
-
+        
     }
 
     /*
@@ -252,6 +126,11 @@ export default class Order extends Component{
         2 : out for delivery                secondary
         3 : delivered                       warning
     */
+
+    reload=(e)=>{
+        e.preventDefault();
+        this.getOrder();
+    }
 
 
     filter=()=>{
@@ -277,7 +156,7 @@ export default class Order extends Component{
                 <div className="col-12 grid-margin stretch-card">
                     <div className="card">
                         <div className="card-body">
-                            <h4 className="card-title">Orders</h4>
+                        <div className="card-title d-flex justify-content-between"> <p>Orders</p> <button onClick={this.reload} className="btn btn-sm btn-outline-dark">Refresh</button> </div> 
                             {this.filter()}
                             <div className="order--list">
                                 

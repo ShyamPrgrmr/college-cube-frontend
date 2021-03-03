@@ -4,6 +4,36 @@ import logo from './../logo.svg';
 export default class TopNavbar extends Component{
     constructor(props){
         super(props);
+
+    }
+
+    state={
+      toggleNav:true,
+      toggleMenu:true
+    };
+
+    IconOnlyNavbar=(e)=>{
+      e.preventDefault();
+      if(this.state.toggleNav){
+        document.getElementById("body").className = "sidebar-icon-only";
+        }
+      
+      else{
+        document.getElementById("body").className = "sidebar-fixed";
+        
+      }
+      this.setState({toggleNav:!this.state.toggleNav});  
+    }
+
+    navbarToggle=(e)=>{
+      e.preventDefault();
+      if(this.state.toggleMenu){
+        document.getElementById("sidebar").className = "sidebar sidebar-offcanvas active";
+      }else{
+        document.getElementById("sidebar").className = "sidebar sidebar-offcanvas";
+      }
+
+      this.setState({toggleMenu:!this.state.toggleMenu});  
     }
 
     render(){
@@ -12,7 +42,7 @@ export default class TopNavbar extends Component{
           <div className="navbar-brand-wrapper d-flex justify-content-center">
             <div className="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center w-100">  
               <a className="navbar-brand brand-logo" href="#"><img src={logo} alt="logo"/></a>
-              <button className="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+              <button className="navbar-toggler navbar-toggler align-self-center" onClick={this.IconOnlyNavbar} type="button" data-toggle="minimize">
                 <span className="mdi mdi-sort-variant"></span>
               </button>
             </div>  
@@ -28,7 +58,7 @@ export default class TopNavbar extends Component{
             <ul className="navbar-nav navbar-nav-right"> 
               <li className="nav-item nav-profile dropdown">
                 <a className="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-                  <span className="nav-profile-name">{this.props.name}</span>
+                  <span className="nav-profile-name">Admin</span>
                 </a>
                 <div className="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
                   <a className="dropdown-item">
@@ -38,7 +68,7 @@ export default class TopNavbar extends Component{
                 </div>
               </li>
             </ul>
-            <button className="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+            <button onClick={this.navbarToggle} className="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
               <span className="mdi mdi-menu"></span>
             </button>
           </div>

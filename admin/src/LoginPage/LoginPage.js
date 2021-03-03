@@ -46,7 +46,7 @@ export default class LoginPage extends Component{
         let res = await axios.post(this.server_url+"admin/login",credentials,{
           headers:{
             'Content-Type': 'application/json',
-            'accept':'application/json'
+            'Accept':'application/json'
           }
         });
         const token = res.data.token;
