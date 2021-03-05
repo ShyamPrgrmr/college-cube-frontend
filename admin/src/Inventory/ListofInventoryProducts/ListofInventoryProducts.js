@@ -77,15 +77,15 @@ export default class AddInventoryProducts extends Component{
         let currentPage = this.state.currentPage;
         return currentPage === 1 ?(
             <div className="btn-group" role='group'>
-                <button className='btn btn-primary' disabled> 0 </button>
-                <button className='btn btn-outline-secondary' disabled> {this.state.currentPage} </button>
-                <button className='btn btn-primary' onClick={this.nextButtonClicked}> {this.state.currentPage+1} </button>
+                <button className='btn btn-primary btn-sm' disabled> 0 </button>
+                <button className='btn btn-outline-secondary btn-sm' disabled> {this.state.currentPage} </button>
+                <button className='btn btn-primary btn-sm' onClick={this.nextButtonClicked}> {this.state.currentPage+1} </button>
             </div>
         ) : (
             <div className="btn-group" role='group'>
-                <button className='btn btn-primary' onClick={this.previousButtonClicked}> {this.state.currentPage-1} </button>
-                <button className='btn btn-outline-secondary' disabled> {this.state.currentPage} </button>
-                <button className='btn btn-primary' onClick={this.nextButtonClicked}> {this.state.currentPage+1} </button>
+                <button className='btn btn-primary btn-sm' onClick={this.previousButtonClicked}> {this.state.currentPage-1} </button>
+                <button className='btn btn-outline-secondary btn-sm' disabled> {this.state.currentPage} </button>
+                <button className='btn btn-primary btn-sm' onClick={this.nextButtonClicked}> {this.state.currentPage+1} </button>
             </div>
         );
     }

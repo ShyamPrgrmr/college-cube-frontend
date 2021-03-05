@@ -11,6 +11,7 @@ import TopNavbar from './Navbar/TopNavabar';
 import Inventory from './Inventory/Inventory';
 import LoginPage from './LoginPage/LoginPage';
 import Deliveries from './Deliveries/Deliveries';
+import Dashboard from './Dashboard/Dashboard';
 
 export default class App extends Component{
   
@@ -86,6 +87,7 @@ export default class App extends Component{
     return(
       
         <Switch>
+            <Route path='/dashboard' component={Dashboard} routeprops={this.props}></Route>
             <Route path='/products/addproduct' component={AddProduct} routeprops={this.props}></Route>
             <Route path='/products/listproducts' component={ListProduct} routeprops={this.props}></Route>
             <Route path='/orders' component={Order} routeprops={this.props}></Route>

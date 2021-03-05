@@ -21,7 +21,7 @@ export default class Error404 extends Component{
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title"><pre>Eror 404! requested page is not found!</pre></h4>
-                    <Link to='/products/addproduct'>Go to homepage</Link>
+                    <Link to='/dashboard'>Go to homepage</Link>
                 </div>
             </div>
         </div>

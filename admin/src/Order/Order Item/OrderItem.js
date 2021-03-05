@@ -131,7 +131,7 @@ export default class OrderItem extends Component{
                         {this.state.useraddress.route}, 
                         {" "+this.state.useraddress.pincode}
                         <br/>
-                        {this.state.usermobile.mob_1}
+                         {this.state.usermobile.mob_1}
                     </p>
                 </div>
                 <hr/>
