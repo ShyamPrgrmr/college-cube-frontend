@@ -10,7 +10,8 @@ export default class EditProduct extends Component{
       description:"",
       measurement:"",
       id:"",
-      server:"http://localhost:8080/"
+      server:"http://localhost:8080/",
+      category:"Dal"
   };
 
   constructor(props) {
@@ -29,7 +30,8 @@ export default class EditProduct extends Component{
         manufacturer:this.props.edit.manufacturer,
         description:this.props.edit.description,
         measurement:this.props.edit.measurement,
-        id:this.props.edit._id
+        id:this.props.edit._id,
+        category:this.props.edit.category
     });
   }
 
@@ -50,7 +52,8 @@ export default class EditProduct extends Component{
         description:this.state.description,
         manufacturer:this.state.manufacturer,
         measurement:this.state.measurement,
-        token:token
+        token:token,
+        category:this.state.category
     });  
 
     fetch(this.state.server+"admin/updateproduct",
@@ -110,6 +113,20 @@ export default class EditProduct extends Component{
                 <div class="form-group">
                     <label for="exampleInputEmail3">Description</label>
                     <textarea type="text" onChange={this.onChange} name="description" class="form-control" value={this.state.description} id="exampleInputEmail3" placeholder="Product description"></textarea>
+                </div>
+
+                <div class="form-group">
+                <label for="category">Category</label>
+                  <select class="form-control" name="category" onChange={this.onChange} value={this.state.category}>
+                    <option value="Dal">Dal</option>
+                    <option value="Oil">Oil</option>
+                    <option value="Personal Care">Personal Care</option>
+                    <option value="Grains">Grains</option>
+                    <option value="Snakes">Snakes</option>
+                    <option value="Dairy">Dairy</option>
+                    <option value="Vegitables">Vegitables</option>
+                    <option value="Drinks">Drinks</option>
+                  </select>
                 </div>
 
                 <button type="submit" onClick={this.onSave} class="btn btn-primary mr-2">Save</button>

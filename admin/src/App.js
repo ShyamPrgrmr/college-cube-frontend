@@ -1,4 +1,3 @@
-
 import './App.css';
 import React,{Component} from 'react';
 import { Switch, Route, Redirect, Link } from 'react-router-dom'
@@ -6,12 +5,14 @@ import AddProduct from './Products/AddProduct/AddProduct';
 import Error404 from './error/Error404';
 import ListProduct from './Products/ListProduct/ListProduct';
 import Order from './Order/Order';
-import Navbar from './Navbar/Navbar';
 import TopNavbar from './Navbar/TopNavabar';
 import Inventory from './Inventory/Inventory';
 import LoginPage from './LoginPage/LoginPage';
 import Deliveries from './Deliveries/Deliveries';
 import Dashboard from './Dashboard/Dashboard';
+import Cookies from 'universal-cookie';
+import InitNavbar,{NavbarView} from './Navbar/InitNavbar';
+
 
 export default class App extends Component{
   
@@ -26,9 +27,17 @@ export default class App extends Component{
     super(props);
   }
 
+  componentDidUpdate=()=>{
+  }
+
+  logout=()=>{
+    new Cookies().remove("token");
+    this.setState({isLogin:false});
+  }
+
   isLogin=(status)=>{
     if(status) this.setState({isLogin:true});
-    else this.setState({isLogin:true});
+    else this.setState({isLogin:false});
   }
 
   toTop=(e)=>{  
@@ -45,9 +54,12 @@ export default class App extends Component{
           <i class="mdi mdi-arrow-up-bold"></i>
         </button>
         
-        <TopNavbar name={this.state.name} route={this.state.route}></TopNavbar>
+        <TopNavbar name={this.state.name} logout={this.logout} route={this.state.route}></TopNavbar>
+        
         <div className="container-fluid page-body-wrapper">
-            <Navbar changeRoute={this.changeRoute} routeprops={this.props}></Navbar>
+
+            <NavbarView/>
+          
             <div className="main-panel">
                 <div className="content-wrapper">
                     <div className="row">
@@ -74,6 +86,7 @@ export default class App extends Component{
           {this.pageContent()}
       
       </div>
+      
       
     </>
     );

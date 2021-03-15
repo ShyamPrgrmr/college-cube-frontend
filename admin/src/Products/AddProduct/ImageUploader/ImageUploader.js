@@ -9,7 +9,8 @@ export default class ImageUploader extends Component {
 
     state={
         files:null,
-        server:"http://localhost:8080/"
+        server:"http://localhost:8080/",
+        uploaded:false
     };
 
     onUpload=async (e)=>{
@@ -17,19 +18,29 @@ export default class ImageUploader extends Component {
         const formData = new FormData();
         const cookies = new Cookies();
         const token = cookies.get("token");
-   
-        formData.append(
-            "file",
-            this.state.files,
-            this.state.files.name
-        );
-
-        formData.append("token",token);
-
-        let data = await axios.post(this.state.server+"admin/addproductimage", formData);
-
-        this.props.onNewImgAdd(data.data);
-
+        if(this.state.files){
+            formData.append(
+                "file",
+                this.state.files,
+                this.state.files.name
+            );
+    
+            formData.append("token",token);
+    
+            let data = await axios.post(this.state.server+"admin/addproductimage", formData);
+    
+            if(data.status===200){
+                this.props.onNewImgAdd(data.data);
+                this.setState({uploaded:true});
+            }
+            else{
+                alert("Something went wrong");
+            }
+        }
+        else{
+            alert("plaese attach files");
+        }
+        
     }
 
     onChange=(e)=>{
@@ -43,7 +54,10 @@ export default class ImageUploader extends Component {
                 <div class="input-group">
                     <input type="file" class="form-control" placeholder="Upload Image" onChange={this.onChange}/>
                     <div class="input-group-append">
-                        <button onClick={this.onUpload} class="btn btn-sm btn-primary" type="button">Upload</button>
+                        <button onClick={this.onUpload} 
+                        disabled={this.state.uploaded}
+                        class="btn btn-sm btn-primary" type="button">
+                        Upload</button>
                     </div>
                 </div>
             </>

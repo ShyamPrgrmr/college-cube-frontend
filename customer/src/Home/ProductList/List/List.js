@@ -1,32 +1,34 @@
 import React,{Component} from 'react';
 import Item from './Item/Item';
+import {connect} from 'react-redux';
 
-export default class List extends Component{
+function mapStateToProps(state){
+  return {products:state.products};
+}
+
+class ListProducts extends Component{
   constructor(props){
     super(props);
   }
 
   state={
-    products:[
-      
-    ],
+    products:[],
     filter:"",
     page:1
   }
 
   fetchProduct=()=>{
-    let filter = this.state.filter;
     let page = this.state.page;
-    
+    this.props.fetchNew(page);
   }
 
   componentDidMount=()=>{
-    this.setState({filter:this.props.filter})
+    this.setState({filter:this.props.filter,products:this.props.products})
   }
 
   componentDidUpdate=()=>{
     if(this.state.filter !== this.props.filter){
-      this.setState({filter:this.props.filter})
+      this.setState({filter:this.props.filter,products:this.props.products,page:1});
     }
   }
 
@@ -65,11 +67,17 @@ export default class List extends Component{
   changePage=(e)=>{
     e.preventDefault();
     this.setState({page:parseInt(e.target.text)});
+    this.props.fetchNewPage(parseInt(e.target.text));
   }
   previousPage=(e)=>{
     e.preventDefault();
-    if(this.state.page-1!==0)
-     this.setState({page:this.state.page-1});
+    
+    if(this.state.page-1!==0){
+      let page = parseInt(this.state.page)-1;
+      this.setState({page});
+      this.props.fetchNewPage(page);
+    }
+     
   }
 
   render(){
@@ -93,3 +101,7 @@ export default class List extends Component{
     </>);
   }
 }
+
+const List = connect(mapStateToProps)(ListProducts)
+
+export default List;

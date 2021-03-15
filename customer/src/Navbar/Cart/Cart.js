@@ -1,38 +1,62 @@
 import React,{Component} from 'react';
 import CartItem from './CartItem/CartItem';
+import {connect} from 'react-redux';
 
-export default class Cart extends Component{
+function mapStateToProps(state){
+    return {cart:state.cart};
+}
+
+
+
+class CartList extends Component{
   constructor(props){
     super(props);
   }
 
-  state={
-      cart:[
-          {
-              
-          },
-
-      ]
-  };
-
-  loadCart=()=>{
-
+  componentDidMount=()=>{
+      this.setState({cart:this.props.cart});
   }
   
+  componentDidUpdate=()=>{
+      if(this.state.cart !== this.props.cart){
+          this.setState({cart:this.props.cart});
+      }
+  }
+
+  loadCartList=()=>{
+    if(this.state){
+        let data = this.state.cart.map(cartitem=>{
+            return <CartItem data={ cartitem } />
+          })
+        return data;
+    }
+    else{
+        return <></>
+    }
+      
+  }
+
+  getNumberOfItem=()=>{
+    let data = this.props.cart;
+    return data.length;
+  }
+
   render(){
     return(<>
         <li class="has-dropdown">
 
             <a class="mini-cart-shop-link"><i class="fas fa-shopping-bag"></i>
 
-                <span class="total-item-round">2</span></a>
+                <span class="total-item-round">{this.getNumberOfItem()}</span></a>
 
 
             <span class="js-menu-toggle"></span>
             <div class="mini-cart">
 
                 <div class="mini-product-container gl-scroll u-s-m-b-15">
-                    <CartItem data={ {name:"gemini oil", measurement:"kg", quantity:300 , price:400 , imgsrc:""} } />
+                    
+                    {this.loadCartList()}
+
                 </div>
 
                 <div class="mini-product-stat">
@@ -50,3 +74,8 @@ export default class Cart extends Component{
     </>);
   }
 }
+
+
+const Cart = connect(mapStateToProps)(CartList)
+
+export default Cart;

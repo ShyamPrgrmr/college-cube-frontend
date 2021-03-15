@@ -1,8 +1,18 @@
 import React,{Component} from 'react';
 import AddToCart from './Modals/AddToCart';
 import QuickView from './Modals/QuickView';
+import {addToCart} from './../../../../redux/action/index';
+import {connect} from 'react-redux';
+import './Item.css';
 
-export default class Item extends Component{
+function mapDispatchToProps(dispatch) {
+  return {
+    addToCart: cartItem => dispatch(addToCart(cartItem))
+  };
+}
+
+
+class ItemClass extends Component{
   constructor(props){
     super(props);
   }
@@ -20,6 +30,12 @@ export default class Item extends Component{
 
   componentDidMount=()=>{
     this.setState({product:this.props});
+  }
+
+  componentDidUpdate=()=>{
+    if(this.state.product !== this.props){
+      this.setState({product:this.props});
+    }
   }
 
   onShowQuickLook=(e)=>{
@@ -42,7 +58,12 @@ export default class Item extends Component{
     return this.state.showAddToCart ? (<AddToCart onCloseAllModal={this.onCloseAllModal}></AddToCart>):<></>;
   }
 
-  addToCart=(data)=>{
+  addToCart=(d)=>{
+    let data = this.state.product;
+    let cartI = Object.assign({},data,{
+      quantity:d
+    });
+    this.props.addToCart(cartI);
   }
 
   addTOWish=()=>{
@@ -57,10 +78,10 @@ export default class Item extends Component{
   render(){
     return(<>
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 u-s-m-b-30 filter__item headphone">
-            <div class="product-o product-o--hover-on product-o--radius">
+            <div class="product-o product-o--hover-on product-o--radius my-change-box">
                 <div class="product-o__wrap">
                     <a class="aspect aspect--bg-grey aspect--square u-d-block" href="product-detail.html">
-                        <img class="aspect__img" src="images/product/electronic/product2.jpg" alt=""/>
+                        <img class="aspect__img" src={this.state.imgsrc} alt=""/>
                     </a>
                     <div class="product-o__action-wrap">
                         <ul class="product-o__action-list">
@@ -91,3 +112,12 @@ export default class Item extends Component{
     </>);
   }
 }
+
+
+const Item = connect(
+  null,
+  mapDispatchToProps
+)(ItemClass);
+
+
+export default Item;

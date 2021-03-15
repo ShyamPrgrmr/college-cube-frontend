@@ -42,12 +42,24 @@ export default class AddInventoryProducts extends Component{
         let list = data.map(
             product=>{
                 index++;
+                let badge="";
+                if(product.quantity<10){
+                    badge = <td><label class="badge badge-danger">Refill Stock</label></td>
+                }
+                else if(product.quantity<200){
+                    badge = <td><label class="badge badge-warning">In Stock</label></td>
+                }
+                else{
+                    badge = <td><label class="badge badge-success">In Stock</label></td> 
+                }
+
                 return(
                     <tr>
                         <td>{index}</td>
                         <td>{product.name}</td>
-                        <td>{product.price+"/"+product.measurement}</td>
-                        <td>{product.quantity+" "+product.measurement}</td>
+                        <td>{product.price+"/ Piece"}</td>
+                        <td>{product.quantity+" "}</td>
+                        {badge}
                     </tr>
                 );
             }
@@ -105,6 +117,7 @@ export default class AddInventoryProducts extends Component{
                                     <th>Name</th>
                                     <th>Price</th>
                                     <th>Quantity</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>

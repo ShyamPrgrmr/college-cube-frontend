@@ -61,7 +61,11 @@ export default class TopNavbar extends Component{
                   <span className="nav-profile-name">Admin</span>
                 </a>
                 <div className="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                  <a className="dropdown-item">
+                  <a className="dropdown-item" onClick={e=>{
+                        e.preventDefault();
+                        this.props.logout();
+                      }
+                      }>
                     <i className="mdi mdi-logout text-primary"></i>
                     Logout
                   </a>

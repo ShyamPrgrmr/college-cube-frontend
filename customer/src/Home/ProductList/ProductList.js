@@ -1,41 +1,70 @@
 import React,{Component} from 'react';
 import Filters from './Filters/Filters';
 import List from './List/List';
+import {connect} from 'react-redux';
+import { setproducts } from '../../redux/action';
 
-export default class ProductList extends Component{
+function mapDispatchToProps(dispatch) {
+    return {
+      setProducts : products => dispatch(setproducts(products))
+    };
+}
+
+class ListView extends Component{
   constructor(props){
     super(props);
   }
 
   state={
-      filter:[
-          
-      ],
-      selectedFilter:"All"
+      filter:[],
+      selectedFilter:"All",
+      products:[],
+      page:1
   }
   
-  componentDidMount=()=>{
-      let filter = [
+  getAllFilters = () =>{
+      return [
         {
             name:"All",
             checked:true
         },
         {
-            name:"Weekly Special",
+            name:"Dal",
             checked:false
         },
         {
-            name:"Most Liked",
+            name:"Oil",
             checked:false
         },
         {
-            name:"Recommended",
+            name:"Personal Care",
+            checked:false
+        },
+        {
+            name:"Grains",
+            checked:false
+        },
+        {
+            name:"Snack",
+            checked:false
+        },
+        {
+            name:"Dairy",
+            checked:false
+        },
+        {
+            name:"Vegetable",
             checked:false
         }
-      ]
 
-      this.setState({filter})
+      ]
   }
+
+
+  componentDidMount=()=>{
+      this.setState({filter:this.getAllFilters()})
+  }
+
 
   loadFilterList= () =>{
       let data = this.state.filter.map(
@@ -64,8 +93,26 @@ export default class ProductList extends Component{
     );
     
     this.setState({filter:data,selectedFilter:selected});
+    this.fetchNew();
   }
 
+  fetchNewPage=(page)=>{
+    let filter = this.state.filter;
+    let products=[];
+
+    //api fetch;
+    
+    this.props.setProducts(products);
+  }
+
+  fetchNew=()=>{
+    let filter = this.state.filter;
+    let products=[];
+
+    //api fetch;
+
+    this.props.setProducts(products);
+  }
 
   render(){
     return(<>
@@ -76,7 +123,7 @@ export default class ProductList extends Component{
                         <div class="filter-category-container">
                             {this.loadFilterList()}
                         </div>
-                        <List filter={this.state.selectedFilter}/>
+                        <List fetchNewPage={this.fetchNewPage} filter={this.state.selectedFilter}/>
                     </div>
                 </div>
             </div>
@@ -84,3 +131,8 @@ export default class ProductList extends Component{
     </>);
   }
 }
+
+
+const ProductList = connect(null,
+    mapDispatchToProps)(ListView);
+export default ProductList;

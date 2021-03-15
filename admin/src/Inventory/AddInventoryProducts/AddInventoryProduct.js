@@ -134,11 +134,6 @@ export default class AddInventoryProducts extends Component{
             this.setState({products:[]});
 
         }).catch(e=>{console.error(e)})
-
-        //post data...
-        //if response is 200... then
-        //this.props.addProductinInventory(this.state.products);
-        
     }
 
     render(){
@@ -153,12 +148,13 @@ export default class AddInventoryProducts extends Component{
                             <div class="form-group">
                                 <label for="">Name of products</label>
                                 <select class="form-control" value={this.state.id} onChange={this.selectProduct}>
+                                    <option disabled></option>
                                     {this.getNamesofProducts()}
                                 </select>
                             </div>
 
                             <div class="form-group">
-                                <label for="">Quantity{" in "+this.state.measurement}</label>
+                                <label for="">Quantity</label>
                                 <input type="text" class="form-control" id="exampleInputName1" placeholder="Quantity" onChange={this.inputId}/>
                             </div>
 

@@ -1,18 +1,9 @@
-import {AddToCart,GetCart} from './../type/index'
+import {AddToCart,GetCart, SetProducts} from './../type/index'
 
 const initialState = {
-    cart:[],
-    products:[
-        {
-            id:1,
-            name:"Gemini Oil 500 gram",
-            imgsrc:"",
-            measurement:"Gram",
-            price:"200",
-            description:"Oil",
-            category:"Oil",
-          }
-    ]
+    cart:[
+    ],
+    products:[]
 };
 
 function rootReducer(state = initialState, action) {
@@ -22,19 +13,26 @@ function rootReducer(state = initialState, action) {
         let cart = state.cart;
         let p = action.payload;
 
-        let data = cart.map(product=>{
+        let data = cart.filter(product=>{
             if(product.id == p.id){
-                return p;
+                return false;
             }
             else{
-                return product;
+                return true;
             }
         });
 
+        data.push(p);
 
         return Object.assign({},state, {
             cart: data
           });
+    }
+
+    if(action.type === SetProducts){
+        return Object.assign({},state,{
+            products:action.payload
+        });
     }
 
     if(action.type === GetCart){

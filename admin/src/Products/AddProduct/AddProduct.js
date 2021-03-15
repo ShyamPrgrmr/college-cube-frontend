@@ -2,6 +2,7 @@ import './AddProduct.css';
 import React,{Component} from 'react';
 import ImageUploader from './ImageUploader/ImageUploader';
 import Cookies from 'universal-cookie';
+import { InputTags } from 'react-bootstrap-tagsinput';
 
 export default class AddProduct extends Component{
   
@@ -12,7 +13,9 @@ export default class AddProduct extends Component{
     description:"",
     images:[],
     token:"",
-    server:"http://localhost:8080/"
+    server:"http://localhost:8080/",
+    category:"Dal",
+    keywords:[]
   };
 
   constructor(props) {
@@ -25,7 +28,6 @@ export default class AddProduct extends Component{
     {
       listSrc.push(src);
       this.setState({images:listSrc});
-      console.log("Image uploaded!");
     } 
   }
 
@@ -50,7 +52,9 @@ export default class AddProduct extends Component{
       manufacturer:this.state.manufacturer,
       images:this.state.images,
       description:this.state.description,
-      token:token
+      token:token,
+      category:this.state.category,
+      keywords:this.state.keywords
     });
 
     fetch(
@@ -70,7 +74,10 @@ export default class AddProduct extends Component{
         measurement:"Kilo Gram",
         manufacturer:"",
         images:[],
-        description:""
+        description:"",
+        category:"Dal",
+        keywords:[]
+        
       });
     }).catch(e=>{
       console.log(e);
@@ -93,7 +100,7 @@ export default class AddProduct extends Component{
             <div class="forms-sample">
               <div class="form-group">
                 <label>Name</label>
-                <input name="name" onChange={this.onChange} value={ this.state.name} type="text" class="form-control" placeholder="Name of product"/>
+                <input name="name" onChange={this.onChange} value={ this.state.name} autoFocus type="text" class="form-control" placeholder="Name of product"/>
               </div>
               
               
@@ -132,6 +139,27 @@ export default class AddProduct extends Component{
                 <textarea type="email" class="form-control" value={this.state.description} onChange={this.onChange} name="description" placeholder="Product description"></textarea>
               </div>
 
+              <div class="form-group">
+                <label for="category">Category</label>
+                  <select class="form-control" name="category" onChange={this.onChange}>
+                    <option value="Dal">Dal</option>
+                    <option value="Oil">Oil</option>
+                    <option value="Personal Care">Personal Care</option>
+                    <option value="Grains">Grains</option>
+                    <option value="Snakes">Snakes</option>
+                    <option value="Dairy">Dairy</option>
+                    <option value="Vegitables">Vegitables</option>
+                    <option value="Drinks">Drinks</option>
+                  </select>
+              </div>
+
+              <div class="form-group">
+                <label for="keywords">Enter Keywords</label>              
+                <InputTags values={this.state.keywords} onTags={(value) => {this.setState({keywords:value.values});
+                
+              }} />
+              </div>
+
 
               <button onClick={this.onSubmit} class="btn btn-primary mr-2">Submit</button>
 
@@ -143,3 +171,16 @@ export default class AddProduct extends Component{
       );
   }
 }
+
+
+ /*
+  dal (mung,chana,tur,udid,),
+	oil (Dalda,Soyabean,Soyabean refine),
+	personal care (soap,shampoo,),
+	grains  (rice,wheat) ,
+	snakes (wafers,),
+	dairy (milk,yagut),
+	vegitables (),
+	drinks (Coke,pepsi)
+ 
+ */
