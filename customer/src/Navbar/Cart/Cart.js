@@ -1,23 +1,25 @@
 import React,{Component} from 'react';
 import CartItem from './CartItem/CartItem';
 import {connect} from 'react-redux';
+import { Link } from 'react-router-dom';
 
 function mapStateToProps(state){
     return {cart:state.cart};
 }
 
-
-
 class CartList extends Component{
   constructor(props){
     super(props);
+    this.loadCartList = this.loadCartList.bind(this);
   }
 
-  componentDidMount=()=>{
+  state={toggle:false,cart:[]}
+
+  componentDidMount(){
       this.setState({cart:this.props.cart});
   }
   
-  componentDidUpdate=()=>{
+  componentDidUpdate(){
       if(this.state.cart !== this.props.cart){
           this.setState({cart:this.props.cart});
       }
@@ -26,7 +28,7 @@ class CartList extends Component{
   loadCartList=()=>{
     if(this.state){
         let data = this.state.cart.map(cartitem=>{
-            return <CartItem data={ cartitem } />
+            return <CartItem key={cartitem.id} data={ cartitem } />
           })
         return data;
     }
@@ -34,6 +36,15 @@ class CartList extends Component{
         return <></>
     }
       
+  }
+
+  onToggle=(e)=>{
+    e.preventDefault();
+    this.setState({toggle:!this.state.toggle});
+  }
+
+  openCloseClass=()=>{
+    return this.state.toggle ? "mini-cart open-menu-1" : "mini-cart close-menu-1" ; 
   }
 
   getNumberOfItem=()=>{
@@ -45,13 +56,13 @@ class CartList extends Component{
     return(<>
         <li class="has-dropdown">
 
-            <a class="mini-cart-shop-link"><i class="fas fa-shopping-bag"></i>
+            <a class="mini-cart-shop-link" onClick={this.onToggle}><i class="fas fa-shopping-bag"></i>
 
                 <span class="total-item-round">{this.getNumberOfItem()}</span></a>
 
 
-            <span class="js-menu-toggle"></span>
-            <div class="mini-cart">
+            <span class="js-menu-toggle" onClick={this.onToggle}></span>
+            <div className={this.openCloseClass()}>
 
                 <div class="mini-product-container gl-scroll u-s-m-b-15">
                     
@@ -64,8 +75,8 @@ class CartList extends Component{
                         <span class="subtotal-text">SUBTOTAL</span>
                         <span class="subtotal-value">$16</span></div>
                     <div class="mini-action">
-                        <a class="mini-link btn--e-brand-b-2" href="#">PROCEED TO CHECKOUT</a>
-                        <a class="mini-link btn--e-transparent-secondary-b-2" href="#">VIEW CART</a></div>
+                        <Link class="mini-link btn--e-brand-b-2" to="/checkout">PROCEED TO CHECKOUT</Link>
+                        <Link class="mini-link btn--e-transparent-secondary-b-2" to="/cart">VIEW CART</Link></div>
                 </div>
 
 

@@ -1,18 +1,32 @@
 import React,{Component} from 'react';
+import {connect} from 'react-redux';
+import {removeFromCart} from './../../../redux/action/index';
 
-export default class CartItem extends Component{
+function mapDispatchToProps(dispatch) {
+  return {
+    removeFromCart: id => dispatch(removeFromCart(id))
+  };
+}
+
+class CartItemDetails extends Component{
   constructor(props){
     super(props);
-    this.state = this.props;
+    this.state = {data:{}}
   }
+
   
-  componentDidMount=()=>{
+  componentDidMount(){
     this.setState({data : this.props.data})
   }
 
-  componentDidUpdate=()=>{
+  componentDidUpdate(){
     if(this.state.data !== this.props.data)
       this.setState({data : this.props.data})
+  }
+
+  onRemove=(e)=>{
+    e.preventDefault();
+    this.props.removeFromCart(this.state.data.id);
   }
 
   render(){
@@ -33,9 +47,17 @@ export default class CartItem extends Component{
                 <span class="mini-product__quantity">{this.state.data.price+" Rs. " + " * " + this.state.data.quantity+" = "} </span>
                 <span class="mini-product__price">{ ( parseInt(this.state.data.price) * parseInt(this.state.data.quantity)) + " Rs"}</span></div>
         </div>
-        <a class="mini-product__delete-link far fa-trash-alt"></a>
+        <a class="mini-product__delete-link far fa-trash-alt" onClick={this.onRemove}></a>
     </div>
     
     </>);
   }
 }
+
+const CartItem = connect(
+  null,
+  mapDispatchToProps
+)(CartItemDetails);
+
+
+export default CartItem;

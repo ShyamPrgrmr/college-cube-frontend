@@ -1,4 +1,4 @@
-import {AddToCart,GetCart,GetProducts, SetProducts} from './../type/index';
+import {AddToCart,ClearCart,GetCart,GetProducts, RemoveFromCart, SetProducts, UpdateCart} from './../type/index';
 
 export function addToCart(payload){
     return { type: AddToCart , payload };
@@ -14,4 +14,16 @@ export function getProducts(payload){
 
 export function setproducts(payload){
     return { type:SetProducts,payload }
+}
+
+export function removeFromCart(payload){
+    return { type:RemoveFromCart,payload }
+}
+
+export function clearCart(){
+    return { type:ClearCart }
+}
+
+export function updateCart(payload){
+    return { type:UpdateCart,payload }
 }

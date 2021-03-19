@@ -10,13 +10,32 @@ export default class Navbar extends Component{
     super(props);
   }
 
+  state={
+    toggleButton:false
+  };
+
   componentDidMount=()=>{
 
   }
   
   componentDidUpdate=()=>{
-    console.log(this.props);
+   
   }
+
+  toggleClass=()=>{
+    return this.state.toggleButton ? "ah-lg-mode menu-init js-open open" : "ah-lg-mode";
+  }
+
+  onOpen=(e)=>{
+    e.preventDefault();
+    this.setState({toggleButton:true});
+  }
+  
+  onClose=(e)=>{
+    e.preventDefault();
+    this.setState({toggleButton:false});
+  }
+
 
   render(){
     return(
@@ -26,20 +45,22 @@ export default class Navbar extends Component{
             <nav class="primary-nav primary-nav-wrapper--border">
                 <div class="container">
                     <div class="primary-nav">
-                        <a class="main-logo" href="index.html"><img className="logo-svg" src={logo} alt=""/></a>
+                        <a class="main-logo"><img className="logo-svg" src={logo} alt=""/></a>
                         <div class="menu-init" id="navigation">
-                        <button class="btn btn--icon toggle-button toggle-button--secondary fas fa-cogs" type="button"></button>
-                            <div class="ah-lg-mode">
-                                <span class="ah-close">✕ Close</span>
+                        <button class="btn btn--icon toggle-button toggle-button--secondary fas fa-cogs" type="button" onClick={this.onOpen}></button>
+                            
+                            <div class={this.toggleClass()}>
+                                <span class="ah-close" onClick={this.onClose}>✕ Close</span>
                                 <ul class="ah-list ah-list--design1 ah-list--link-color-secondary">
                                     
-                                    <User/>
-                                    <MenuItem title="Home" icon="fas fa-home"/>
-                                    <MenuItem title="Wishlist" icon="far fa-heart"/>
-                                    <Cart/>
-
+                                   
+                                    <MenuItem title="Home" icon="fas fa-home" path="/"/>
+                                    <MenuItem title="Wishlist" icon="far fa-heart" path="/wishlist"/>
+                                    <Cart path="/cart"/>
+                                    <User path={ { path: [ "/signup","/signin","/account" ] } }/>
                                 </ul>
                             </div>
+
                         </div>
                     </div>
                 </div>
