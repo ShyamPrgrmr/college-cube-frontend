@@ -1,4 +1,4 @@
-import {AddToCart,ClearCart,GetCart, RemoveFromCart, SetProducts, UpdateCart} from './../type/index'
+import {AddToCart,ClearCart,GetCart, RemoveFromCart, setLogin, setLogout, SetProducts, UpdateCart} from './../type/index'
 
 const initialState = {
     cart:[],
@@ -14,9 +14,18 @@ const initialState = {
             manufacturer:"Gemini",
             price:10,
 
-        }
+        },
+        
     ],
     isLoggedIn:false,
+    username:"User",
+    token:"",
+    address:"",
+    mobile:"",
+    fname:"",
+    lname:"",
+    server:"http://localhost:8080/",
+    email:""
 };
 
 function rootReducer(state = initialState, action) {
@@ -71,7 +80,24 @@ function rootReducer(state = initialState, action) {
        return state.cart;
     }
 
+    if(action.type===setLogin){
+        return Object.assign({},state,{
+            isLoggedIn:true,
+            username:action.payload.username,
+            token:action.payload.token,
+            fname:action.payload.fname,
+            lname:action.payload.lname,
+            address:action.payload.address,
+            mobile:action.payload.mobile,
+            email:action.payload.email
+        });
+    }
     
+    
+    if(action.type===setLogout){
+        return Object.assign({},state,{isLoggedIn:false,username:"Not Login",token:""});
+    }
+
     return state;
 };
 

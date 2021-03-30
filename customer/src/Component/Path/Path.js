@@ -8,6 +8,9 @@ export function PathView() {
     return <> </>
   }
   else{
+
+    let chLoc = new String(location.pathname).replace("-"," ").toUpperCase().slice(1);
+
     return <>
         <div class="u-s-p-y-60 paddingTopBottomZero">
             <div class="section__content">
@@ -20,7 +23,7 @@ export function PathView() {
                                 </li>
                                 
                                 <li class="is-marked">
-                                    <Link to={location.pathname}>{location.pathname.toUpperCase().slice(1)}</Link>
+                                    <Link to={location.pathname}>{chLoc}</Link>
                                 </li>
 
                             </ul>

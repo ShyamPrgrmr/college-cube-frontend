@@ -55,7 +55,6 @@ export default class Navbar extends Component{
                                     
                                    
                                     <MenuItem title="Home" icon="fas fa-home" path="/"/>
-                                    <MenuItem title="Wishlist" icon="far fa-heart" path="/wishlist"/>
                                     <Cart path="/cart"/>
                                     <User path={ { path: [ "/signup","/signin","/account" ] } }/>
                                 </ul>

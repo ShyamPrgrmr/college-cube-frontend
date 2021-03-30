@@ -1,4 +1,5 @@
 import React,{Component} from 'react'
+import { Link } from 'react-router-dom';
 
 class GrandTotal extends Component {
     constructor(props) {
@@ -17,23 +18,14 @@ class GrandTotal extends Component {
                                     <table class="f-cart__table">
                                         <tbody>
                                             <tr>
-                                                <td>DELIVERY CHARGES</td>
-                                                <td>2RS.</td>
-                                            </tr>
-                                            <tr>
-                                                <td>SUBTOTAL</td>
-                                                <td>40Rs.</td>
-                                            </tr>
-                                            <tr>
                                                 <td>GRAND TOTAL</td>
-                                                <td>42.00Rs.</td>
+                                                <td>{this.props.total} Rs.</td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
                                 <div>
-
-                                    <button class="btn btn--e-brand-b-2" type="submit"> PROCEED TO CHECKOUT</button></div>
+                                    <Link class="btn btn--e-brand-b-2" to="/checkout"> PROCEED TO CHECKOUT</Link></div>
                             </div>
                         </div>
                     </div>

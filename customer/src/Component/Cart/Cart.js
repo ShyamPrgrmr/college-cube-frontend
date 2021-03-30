@@ -22,7 +22,8 @@ class CartView extends Component{
 
     state={
         cart:[],
-        isCartUpdated:false
+        isCartUpdated:false,
+        total:0.0
     }
 
     componentDidMount=()=>{
@@ -36,6 +37,7 @@ class CartView extends Component{
     }
 
     getCartItemList=()=>{
+        let total = 0;
         let data = this.state.cart.map(
             item=>{
                 return <CartItem cartitem={item} updateCartItem={this.updateCartItem}/>
@@ -89,8 +91,11 @@ class CartView extends Component{
     }
 
     getGrandTotal=()=>{
+        let total = 0;
+        this.state.cart.forEach(item=>{ total = total + parseInt(item.quantity) * parseInt(item.price) });
+
         if(this.state.cart.length !== 0){
-            return <> <GrandTotal /></>
+            return <> <GrandTotal total={total}/></>
         }
         else return <></>
     }

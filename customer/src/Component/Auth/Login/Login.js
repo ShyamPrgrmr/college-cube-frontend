@@ -1,8 +1,19 @@
 import React,{Component} from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import SectionIntro from './../../Header/Header';
+import {connect} from 'react-redux';
+import { setlogin } from '../../../redux/action';
+import Cookies from 'universal-cookie';
 
-class Login extends Component{
+function mapStateToProps(state){
+    return {isLoggedIn:state.isLoggedIn,username:state.username,server:state.server};
+}
+
+function mapDispatchToProps(dispatch) {
+    return { setLogin : loginData =>  { dispatch( setlogin(loginData)) }}
+}
+
+class LoginView extends Component{
     
     constructor(props){
         super(props);
@@ -10,11 +21,73 @@ class Login extends Component{
 
     state={
         email:"",
-        password:""
+        password:"",
+        status:false,
+        isLoggedIn:false
+    }
+
+    loadErrorMessage=()=>{
+        return !this.state.status ? <span class="gl-text u-s-m-b-30">If you have an account with us, please log in.</span> : <span class="gl-text u-s-m-b-30" style={{color:"red"}}>Email and Password Not Matched!</span>;
+    }
+
+    loadRedirect=()=>{
+        return this.state.isLoggedIn ? <Redirect to="/my-account"/> : <></>
     }
 
     onSubmit=(e)=>{
         e.preventDefault();
+        let json = JSON.stringify(
+            {
+                email:this.state.email,
+                password:this.state.password
+            }
+        );
+
+        fetch(
+            this.props.server+"user/login",
+            {
+                body:json,
+                headers:{
+                    "content-type":"Application/json",
+                    "accept":"Application/json",
+                },
+                method:"POST"
+            }
+        ).then(
+            data=>{
+                if(data.status === 404){
+                   this.setState({status:true});
+                    throw new Error("");
+                }
+                else{
+                    return data.json();
+                }
+            }
+        ).then(
+            udata=>{
+
+                let now = new Date();
+                now.setTime(now.getTime() + 1 * 3600 * 1000);
+                const cookies = new Cookies();
+                cookies.set('token', udata.token, { path: '/',expires:now });
+
+                let username = udata.udata.name.firstname+" "+udata.udata.name.lastname;
+                let address = udata.udata.address.route;
+                let mobile = udata.udata.mobile.mob_1;
+                let fname = udata.udata.name.firstname;
+                let lname = udata.udata.name.lastname;
+                let token = udata.token;
+                let email = this.state.email;
+
+                this.props.setLogin({
+                    username,address,mobile,token,fname,lname,email
+                });
+
+                this.setState({isLoggedIn:true});
+            }
+        ).catch(err=>{
+        });
+
     }
 
     onChange=(e)=>{
@@ -23,7 +96,7 @@ class Login extends Component{
 
     render(){
         return(<>
-        
+        {this.loadRedirect()}
         <div class="u-s-p-b-60">
         <SectionIntro title="Already Registered?"/>
                 <div class="section__content">
@@ -41,7 +114,7 @@ class Login extends Component{
                                         </div>
                                         
                                         <h1 class="gl-h1">SIGNIN</h1>
-                                        <span class="gl-text u-s-m-b-30">If you have an account with us, please log in.</span>
+                                        {this.loadErrorMessage()}
                                         <form class="l-f-o__form" onSubmit={this.onSubmit}>
 
                                             <div class="u-s-m-b-30">
@@ -76,4 +149,5 @@ class Login extends Component{
     }
 }
 
+const Login = connect(mapStateToProps,mapDispatchToProps)(LoginView);
 export default Login;

@@ -55,32 +55,10 @@ class CartList extends Component{
   render(){
     return(<>
         <li class="has-dropdown">
-
-            <a class="mini-cart-shop-link" onClick={this.onToggle}><i class="fas fa-shopping-bag"></i>
-
-                <span class="total-item-round">{this.getNumberOfItem()}</span></a>
-
-
-            <span class="js-menu-toggle" onClick={this.onToggle}></span>
-            <div className={this.openCloseClass()}>
-
-                <div class="mini-product-container gl-scroll u-s-m-b-15">
-                    
-                    {this.loadCartList()}
-
-                </div>
-
-                <div class="mini-product-stat">
-                    <div class="mini-total">
-                        <span class="subtotal-text">SUBTOTAL</span>
-                        <span class="subtotal-value">$16</span></div>
-                    <div class="mini-action">
-                        <Link class="mini-link btn--e-brand-b-2" to="/checkout">PROCEED TO CHECKOUT</Link>
-                        <Link class="mini-link btn--e-transparent-secondary-b-2" to="/cart">VIEW CART</Link></div>
-                </div>
-
-
-            </div>
+            <Link class="mini-cart-shop-link" to="/cart">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="total-item-round">{this.getNumberOfItem()}</span>
+            </Link>
         </li>
     </>);
   }
@@ -90,3 +68,30 @@ class CartList extends Component{
 const Cart = connect(mapStateToProps)(CartList)
 
 export default Cart;
+
+
+/**
+ * 
+ 
+<span class="js-menu-toggle" onClick={this.onToggle}></span>
+<div className={this.openCloseClass()}>
+
+    <div class="mini-product-container gl-scroll u-s-m-b-15">
+        
+        {this.loadCartList()}
+
+    </div>
+
+    <div class="mini-product-stat">
+        <div class="mini-total">
+            <span class="subtotal-text">SUBTOTAL</span>
+            <span class="subtotal-value">$16</span></div>
+        <div class="mini-action">
+            <Link class="mini-link btn--e-brand-b-2" to="/checkout">PROCEED TO CHECKOUT</Link>
+            <Link class="mini-link btn--e-transparent-secondary-b-2" to="/cart">VIEW CART</Link></div>
+    </div>
+
+
+</div>
+ * 
+ */

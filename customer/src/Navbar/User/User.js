@@ -1,9 +1,15 @@
 import React,{Component} from 'react';
 import { Link } from 'react-router-dom';
 import {connect} from 'react-redux';
+import { setlogout } from './../../redux/action/index';
+import Cookies from 'universal-cookie';
 
 function mapStateToProps(state){
   return {isLoggedIn : state.isLoggedIn };
+}
+
+function mapDispatchToProps(dispatch){
+  return { setlogout : data => { dispatch(setlogout(data)) } }
 }
 
 
@@ -38,19 +44,25 @@ class UserView extends Component{
   }
 
   getAccountContent=()=>{
+
+
     return this.state.isLoggedIn ? <>
       <li>
-        <Link to="/account">
+        <Link to="/my-account">
           <i class="fas fa-user-circle u-s-m-r-6"></i>
           <span>Account</span>
         </Link>
       </li>
 
       <li>
-        <Link to="/signout">
+        <a onClick={(e)=>{e.preventDefault();
+          this.props.setlogout("logout"); 
+          let cookies = new Cookies();
+          cookies.remove("token");
+          }}>
           <i class="fas fa-lock-open u-s-m-r-6"></i>
           <span>Signout</span>
-        </Link>
+        </a>
       </li>
     
     </> : <>
@@ -85,5 +97,5 @@ class UserView extends Component{
   }
 }
 
-const User = connect(mapStateToProps)(UserView);
+const User = connect(mapStateToProps,mapDispatchToProps)(UserView);
 export default User;

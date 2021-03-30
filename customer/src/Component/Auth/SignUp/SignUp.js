@@ -1,8 +1,14 @@
 import React,{Component} from 'react';
 import { Link } from 'react-router-dom';
 import SectionIntro from './../../Header/Header';
+import {connect} from 'react-redux';
 
-class SignUp extends Component{
+function mapStateToProps(state){
+    return {server:state.server};
+}
+
+
+class SignUpView extends Component{
     
     constructor(props){
         super(props);
@@ -11,7 +17,43 @@ class SignUp extends Component{
 
     onSubmit=(e)=>{
         e.preventDefault();
-        console.log(this.state);
+
+        let json = JSON.stringify(
+            {
+                fname:this.state.fname,
+                lname:this.state.lname,
+                email:this.state.email,
+                phone:this.state.phone,
+                bdate:{
+                    day:this.state.bday,
+                    month:this.state.bmonth,
+                    year:this.state.byear
+                },
+                address:this.state.address,
+                gender:this.state.gender,
+                password:this.state.password
+            }
+        );
+
+        fetch(this.props.server+"user/signup",{
+            method:"POST",
+            headers:{
+                "content-type":"Application/json",
+                "Accept":"Application/json"
+            },
+            body:json
+        })
+        .then(data=>{
+            if(data.status !== 409)
+            return data.json()
+            else {throw new Error("User already exist");}
+        })
+        .then(userdata=>{
+            alert("Signed Up Successful!");
+        }).catch(err=>{
+            let e = new Error(err);
+            alert(e.message); 
+        })
     }
 
     onChange=(e)=>{
@@ -25,11 +67,13 @@ class SignUp extends Component{
         fname:"",
         lname:"",
         email:"",
+        phone:"",
         gender:"Male",
         bmonth:"1",
         bday:1,
         byear:2002,
-        password:""
+        password:"",
+        address:""
     }
 
     getMonth=()=>{
@@ -125,8 +169,8 @@ class SignUp extends Component{
                                             <label class="gl-label" for="gender">GENDER</label>
                                             <select class="select-box select-box--primary-style u-w-100" onChange={this.onChange} value={this.state.gender} name="gender" id="gender" required>
                                                 <option selected>Select</option>
-                                                <option value="male">Male</option>
-                                                <option value="female">Female</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
                                             </select>
                                         </div>
                                     </div>
@@ -138,10 +182,20 @@ class SignUp extends Component{
                                     </div>
 
                                     <div class="u-s-m-b-30">
+                                        <label class="gl-label" for="reg-email">Phone *</label>
+                                        <input class="input-text input-text--primary-style" onChange={this.onChange} value={this.state.phone} name="phone" type="number" autoComplet="on" placeholder="Enter Phone number" required/>
+                                    </div>
+
+                                    <div class="u-s-m-b-30">
+                                        <label class="gl-label" for="reg-password">Address *</label>
+                                        <input class="input-text input-text--primary-style" onChange={this.onChange} value={this.state.address} name="address" type="address"  placeholder="Enter Delivery Address" required/>
+                                    </div>
+
+                                    <div class="u-s-m-b-30">
                                         <label class="gl-label" for="reg-password">PASSWORD *</label>
                                         <input class="input-text input-text--primary-style" onChange={this.onChange} value={this.state.password} name="password" type="password"  placeholder="Enter Password" required/>
                                     </div>
-                                    
+
                                     <div class="u-s-m-b-15">
                                         <button class="btn btn--e-transparent-brand-b-2" type="submit">CREATE</button>
                                     </div>
@@ -162,5 +216,5 @@ class SignUp extends Component{
     }
 }
 
-
+const SignUp = connect(mapStateToProps)(SignUpView);
 export default SignUp;

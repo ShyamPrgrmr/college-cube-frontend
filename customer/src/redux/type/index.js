@@ -12,3 +12,7 @@ export const RemoveFromCart = "REMOVE_FROM_CART";
 export const ClearCart = "CLEAR_CART";
 
 export const UpdateCart = "UPDATE_CART";
+
+export const setLogin = "SET_LOGIN";
+
+export const setLogout = "SET_LOGOUT";
