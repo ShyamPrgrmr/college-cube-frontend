@@ -9,6 +9,11 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
+function mapStateToProps(state){
+    return {
+        server:state.server
+    }
+}
 
 
 class CartItemView extends Component {
@@ -62,7 +67,7 @@ class CartItemView extends Component {
                     <td>
                         <div class="table-p__box">
                             <div class="table-p__img-wrap">
-                                <img class="u-img-fluid" src="images/product/electronic/product3.jpg" alt=""/>
+                                <img class="u-img-fluid" src={this.props.server+this.state.cartitem.imgsrc} alt=""/>
                             </div>
                             <div class="table-p__info">
                                 <span class="table-p__name">
@@ -100,6 +105,6 @@ class CartItemView extends Component {
     }
 }
 
-const CartItem = connect(null,mapDispatchToProps)(CartItemView);
+const CartItem = connect(mapStateToProps,mapDispatchToProps)(CartItemView);
 
 export default CartItem;

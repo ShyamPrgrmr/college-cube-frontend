@@ -9,6 +9,10 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
+function mapStateToProps(state){
+    return {server:state.server};
+}
+
 
 class CartScrollItemView extends Component {
     constructor(props) {
@@ -37,7 +41,7 @@ class CartScrollItemView extends Component {
                 <div class="o-card__flex">
 
                     <div class="o-card__img-wrap">
-                        <img class="u-img-fluid" src={this.state.cartitem.imgsrc} alt="image"/>
+                        <img class="u-img-fluid" src={this.props.server+this.state.cartitem.imgsrc} alt="image"/>
                     </div>
                     
                     <div class="o-card__info-wrap">
@@ -56,5 +60,5 @@ class CartScrollItemView extends Component {
         );
     }
 }
-const CartScrollItem = connect(null,mapDispatchToProps)(CartScrollItemView);
+const CartScrollItem = connect(mapStateToProps,mapDispatchToProps)(CartScrollItemView);
 export default CartScrollItem;

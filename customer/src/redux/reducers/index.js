@@ -1,22 +1,12 @@
-import {AddToCart,ClearCart,GetCart, RemoveFromCart, setLogin, setLogout, SetProducts, UpdateCart} from './../type/index'
+import {AddToCart,ClearCart,GetCart,
+    loadproductsdescription,
+        RemoveFromCart, setDeliveryType,
+        setLogin, setLogout, SetProducts, 
+        UpdateCart,updateUser} from './../type/index'
 
 const initialState = {
     cart:[],
-    products:[
-        {
-            id:123,
-            name:"gemini oil",
-            measurement:"Kg",
-            category:"Oil",
-            description:"A Description",
-            imgsrc:"",
-            images:[],
-            manufacturer:"Gemini",
-            price:10,
-
-        },
-        
-    ],
+    products:[],
     isLoggedIn:false,
     username:"User",
     token:"",
@@ -25,7 +15,9 @@ const initialState = {
     fname:"",
     lname:"",
     server:"http://localhost:8080/",
-    email:""
+    email:"",
+    deliveryAction:"Delivery",
+    counter:0
 };
 
 function rootReducer(state = initialState, action) {
@@ -51,12 +43,27 @@ function rootReducer(state = initialState, action) {
           });
     }
 
+    if(action.type === setDeliveryType){
+        return Object.assign({},state,{deliveryAction:action.payload});
+    }
+
     if(action.type === ClearCart ){
         return Object.assign({},state,{cart:[]});
     }
 
     if(action.type === UpdateCart){
         return Object.assign({},state,{cart:action.payload});
+    }
+
+    if(action.type === updateUser){
+        return Object.assign({},state,{
+            fname:action.payload.fname,
+            lname:action.payload.lname,
+            email:action.payload.email,
+            address:action.payload.address,
+            mobile:action.payload.phone,
+            username:action.payload.fname+" "+action.payload.lname
+        });
     }
 
     if(action.type === RemoveFromCart){
@@ -93,7 +100,13 @@ function rootReducer(state = initialState, action) {
         });
     }
     
-    
+    if(action.type === loadproductsdescription){
+        let counter = state.counter+1;
+        return Object.assign({},state,{
+            counter:counter
+        })
+    }
+
     if(action.type===setLogout){
         return Object.assign({},state,{isLoggedIn:false,username:"Not Login",token:""});
     }

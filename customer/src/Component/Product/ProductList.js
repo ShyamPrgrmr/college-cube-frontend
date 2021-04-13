@@ -1,5 +1,4 @@
 import React,{Component} from 'react';
-import Filters from './Filters/Filters';
 import List from './List/List';
 import {connect} from 'react-redux';
 import { setproducts } from '../../redux/action';
@@ -20,42 +19,14 @@ class ListView extends Component{
   }
 
   state={
-      filter:[],
-      selectedFilter:"All",
       products:[],
       page:1,
   }
   
-  getAllFilters = () =>{
-    let filter = [{
-        name:"All",
-        checked:true
-    }];
-
-    fetch(this.props.state.server+"shop/getfilters",{
-        headers:{
-            "content-type":"Application/json",
-            "accept":"Application/json"
-        },
-        method:"GET"
-    }).then(data=>{ 
-        if(data.status===200){
-            return data.json();
-        }
-    }).then(data=>{
-       let fil = data.filters;
-       fil.forEach(f => {
-            filter.push({name:f,checked:false});
-       });
-
-       this.setState({filter})
-    
-    }).catch(e=>{alert(e)});
-  }
 
   loadProductList=()=>{
 
-    fetch(this.props.state.server+"shop/getproductbyfilter?filter=All&page=1",{
+    fetch(this.props.state.server+"shop/getproductbyfilter?filter="+this.props.filter+"&page="+this.state.page,{
         headers:{
             "content-type":"Application/json",
             "accept":"Application/json"
@@ -66,51 +37,13 @@ class ListView extends Component{
             return data.json();
         }
     }).then(data=>{
-        
-        this.props.setProducts(data.products);
         this.setState({products:data.products});
-
     }).catch(e=>{alert(e)});
   
 }
 
-
- 
-
   componentDidMount=()=>{
-      this.getAllFilters();
       this.loadProductList();
-  }
-
-
-  loadFilterList= () =>{
-      let data = this.state.filter.map(
-          fil =>{
-              return <Filters data={fil} filterChanged={this.filterChanged}></Filters>
-          }
-      );
-      
-      return data;
-  }
-
-  filterChanged=(item)=>{
-    let selected = "";
-    let data = this.state.filter.map(
-        fil =>{
-            if(fil.name === item){
-                fil.checked = true;
-                selected = fil.name;
-                return fil;
-            }
-            else{
-                fil.checked = false;
-                return fil;
-            }
-        }
-    );
-    
-    this.setState({filter:data,selectedFilter:selected});
-    this.fetchNew(item);
   }
 
   fetchNewPage=(page)=>{
@@ -126,34 +59,11 @@ class ListView extends Component{
                 return data.json();
             }
         }).then(data=>{
-            
-            this.props.setProducts(data.products);
-
+            this.setState({products:data.products}); 
         }).catch(e=>{alert(e)});
   }
 
-  fetchNew=(item)=>{
-    let products=[];
-    this.setState({page:1});
-
-    fetch(this.props.state.server+"shop/getproductbyfilter?filter="+item+"&page=1",{
-        headers:{
-            "content-type":"Application/json",
-            "accept":"Application/json"
-        },
-        method:"GET"
-        }).then(data=>{ 
-            if(data.status===200){
-                return data.json();
-            }
-        }).then(data=>{
-            
-            this.props.setProducts(data.products);
-
-        }).catch(e=>{alert(e)});
-
-        this.props.setProducts(products);
-    }
+ 
 
   loadPagination=()=>{
     let page = this.state.page;
@@ -203,10 +113,7 @@ class ListView extends Component{
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="filter-category-container">
-                            {this.loadFilterList()}
-                        </div>
-                        <List filter={this.state.selectedFilter}/>
+                        <List products={this.state.products}/>
                     </div>
                     
                     <div class="col-lg-12">

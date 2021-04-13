@@ -1,4 +1,8 @@
-import {AddToCart,ClearCart,GetCart,GetProducts, RemoveFromCart, setLogin, setLogout, SetProducts, UpdateCart} from './../type/index';
+import {
+    AddToCart,ClearCart,GetCart,GetProducts,
+    RemoveFromCart, setLogin, setLogout, SetProducts,
+    UpdateCart,setDeliveryType, updateUser, loadproductsdescription
+} from './../type/index';
 
 export function addToCart(payload){
     return { type: AddToCart , payload };
@@ -34,4 +38,16 @@ export function setlogout(payload){
 
 export function setlogin(payload){
     return {type:setLogin,payload}
+}
+
+export function setDeliveryAction(payload){
+    return {type:setDeliveryType,payload}
+}
+
+export function updateUserData(payload){
+    return {type:updateUser,payload};
+}
+
+export function loadProductDescription(payload){
+    return {type:loadproductsdescription,payload}
 }

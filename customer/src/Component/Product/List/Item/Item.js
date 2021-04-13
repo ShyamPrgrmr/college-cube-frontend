@@ -1,20 +1,21 @@
 import React,{Component} from 'react';
 import AddToCart from './Modals/AddToCart';
 import QuickView from './Modals/QuickView';
-import {addToCart} from './../../../../redux/action/index';
+import {addToCart,loadProductDescription} from './../../../../redux/action/index';
 import {connect} from 'react-redux';
-import {Link} from 'react-router-dom';
+import {Link, Redirect, withRouter} from 'react-router-dom';
 import './Item.css';
 import Stars from './Stars/Stars';
 
 function mapDispatchToProps(dispatch) {
   return {
-    addToCart: cartItem => dispatch(addToCart(cartItem))
+    addToCart: cartItem => dispatch(addToCart(cartItem)),
+    loadproductdescription: data => dispatch(loadProductDescription(data))
   };
 }
 
 function mapStateToProps(state){
-  return {server:state.server};
+  return {server:state.server,counter:state.counter};
 }
 
 
@@ -26,7 +27,9 @@ class ItemClass extends Component{
   state={
       showAddToCart:false,
       showQuickView:false,
-      product:{}
+      product:{},
+      redirect:0,
+      counter:0
   }
 
   onShowAddTOCart=(e)=>{
@@ -35,13 +38,15 @@ class ItemClass extends Component{
   }
 
   componentDidMount=()=>{
-    this.setState({product:this.props});
-    
+    this.setState({product:this.props,counter:this.props.counter});
   }
 
   componentDidUpdate=()=>{
     if(this.state.product !== this.props){
       this.setState({product:this.props});
+    }
+    if(this.state.counter !== this.props.counter){
+      this.setState({counter:this.props.counter});
     }
   }
 
@@ -74,7 +79,29 @@ class ItemClass extends Component{
   }
 
   addTOWish=()=>{
+    
+  }
 
+  loadRedirect=()=>{
+    if(this.state.redirect===1){
+      return <Redirect to={"/product-details?id="+this.state.product.id}></Redirect>;
+    }else{
+      return <></>;
+    }
+  }
+
+  onLinkClick=(e)=>{
+    e.preventDefault();
+    
+    if( (this.state.counter%2) === 0){
+      this.props.loadproductdescription();
+      this.props.history.push("/product-details-more?id="+this.state.product.id);
+    }else{
+      this.props.loadproductdescription();
+      this.props.history.push("/product-details?id="+this.state.product.id);  
+    }
+      
+    
   }
 
   addToWishList=(e)=>{
@@ -84,6 +111,7 @@ class ItemClass extends Component{
 
   render(){
     return(<>
+        {this.loadRedirect()}
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 u-s-m-b-30 filter__item headphone">
             <div class="product-o product-o--hover-on product-o--radius my-change-box">
                 <div class="product-o__wrap">
@@ -102,11 +130,11 @@ class ItemClass extends Component{
                 </div>
                 
                 <span class="product-o__category">
-                    <a href="">{this.state.product.category}</a>
+                    <a >{this.state.product.category}</a>
                 </span>
                 
                 <span class="product-o__name">
-                    <Link to={"/product-details?id="+this.state.product.id}>{this.state.product.name}</Link>
+                    <a onClick={this.onLinkClick} >{this.state.product.name}</a>
                     <Stars review = {this.props.review}/>
                 </span>
                 <span class="product-o__price">{this.state.product.price} Rs.</span>
@@ -125,4 +153,4 @@ const Item = connect(
 )(ItemClass);
 
 
-export default Item;
+export default  withRouter(Item) ;

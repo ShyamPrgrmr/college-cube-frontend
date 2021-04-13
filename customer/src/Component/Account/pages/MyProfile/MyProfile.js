@@ -1,6 +1,18 @@
 import React,{Component} from 'react';
+import {connect} from 'react-redux';
 
-class MyProfile extends Component {
+
+ function mapStateToProps(state){
+    return {    
+        username : state.username,
+        email:state.email,
+        phone:state.mobile,
+        address:state.address
+    }
+}
+
+
+class MyProfileView extends Component {
     constructor(props) {
         super(props);
         this.state = { 
@@ -13,6 +25,18 @@ class MyProfile extends Component {
 
          };
     }
+
+    componentDidMount=()=>{
+        this.setState({...this.props});
+    }
+
+    componentDidUpdate=()=>{
+        if(this.state.username !== this.props.username){
+            this.setState({...this.props});
+        }
+    }
+
+
     render() {
         return (
             <>
@@ -27,7 +51,7 @@ class MyProfile extends Component {
                             <div class="col-lg-4 u-s-m-b-30">
                                 <h2 class="dash__h2 u-s-m-b-8">Full Name</h2>
 
-                                <span class="dash__text">{this.state.name}</span>
+                                <span class="dash__text">{this.state.username}</span>
                             </div>
                             <div class="col-lg-4 u-s-m-b-30">
                                 <h2 class="dash__h2 u-s-m-b-8">E-mail</h2>
@@ -40,16 +64,7 @@ class MyProfile extends Component {
 
                                 <span class="dash__text">{this.state.phone}</span>
                             </div>
-                            <div class="col-lg-4 u-s-m-b-30">
-                                <h2 class="dash__h2 u-s-m-b-8">Birthday</h2>
-
-                                <span class="dash__text">{this.state.birthdate}</span>
-                            </div>
-                            <div class="col-lg-4 u-s-m-b-30">
-                                <h2 class="dash__h2 u-s-m-b-8">Gender</h2>
-
-                                <span class="dash__text">{this.state.gender}</span>
-                            </div>
+                            
                         </div>
 
                         <div className="row">
@@ -79,5 +94,7 @@ class MyProfile extends Component {
         );
     }
 }
+
+const MyProfile = connect(mapStateToProps)(MyProfileView);
 
 export default MyProfile;

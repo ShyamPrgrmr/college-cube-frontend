@@ -1,7 +1,18 @@
 import React,{Component} from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-class DeliveryInformation extends Component {
+function mapStateToProps(state){
+    return {
+        fname:state.fname,
+        lname:state.lname,
+        email:state.email,
+        address:state.address,
+        phone:state.mobile,
+    };
+}
+
+class DeliveryInformationView extends Component {
     constructor(props) {
         super(props);
         this.state = { 
@@ -14,114 +25,65 @@ class DeliveryInformation extends Component {
         };
     }
 
-    useDefaultDeliveryAddressClicked=(e)=>{
-        if(e.target.checked){
-            //api fetch
-            console.log("useDefaultDeliveryAddressClicked")
-        }else{
-            this.setState(
-                { 
-                    billingfname:"",
-                    billinglname:"",
-                    billingemail:"",
-                    billingphone:"",
-                    billingstreet:"",
-                    billingstreetoptional:"",
-                }
-            );
-        }
-    }
-
-    saveAsDefault=(e)=>{
-        if(e.target.checked){
-            //api save as default          
-        }
-    }
-
-    onSubmitForm=(e)=>{
-        e.preventDefault();
-        let json = JSON.stringify({
-            token:""
+    componentDidMount=()=>{
+        this.setState({
+            billingfname:this.props.fname,
+            billinglname:this.props.lname,
+            billingemail:this.props.email,
+            billingphone:this.props.phone,
+            billingstreet:this.props.address
         });
-        
     }
 
-    onChange=(e)=>{
-        e.preventDefault();
-        let name = e.target.name;
-        let value = e.target.value;
-        this.setState({[name]:value});
-    }
 
     render() {
         return (
             <>
             <div class="col-lg-6">
                 <h1 class="checkout-f__h1">DELIVERY INFORMATION</h1>
-                <form class="checkout-f__delivery" onSubmit={this.onSubmitForm}>
+                <div class="checkout-f__delivery">
                     <div class="u-s-m-b-30">
-
-
-                        <div class="u-s-m-b-15">
-                            <div class="check-box">
-                                <input type="checkbox" id="get-address" name="getaddress" onChange={this.useDefaultDeliveryAddressClicked}/>
-                                <div class="check-box__state check-box__state--primary">
-                                    <label class="check-box__label" for="get-address">Use default delivery address from account</label>
-                                </div>
-                            </div>
-                        </div>
-                        
-
 
                         <div class="gl-inline">
                             <div class="u-s-m-b-15">
                                 <label class="gl-label" for="billing-fname">FIRST NAME *</label>
-                                <input class="input-text input-text--primary-style" type="text" onChange={this.onChange} value={this.state.billingfname} required name="billingfname" placeholder="First name"/>
+                                <input class="input-text input-text--primary-style" type="text" value={this.state.billingfname} required name="billingfname" placeholder="First name"/>
                             </div>
                             <div class="u-s-m-b-15">
                                 <label class="gl-label" for="billing-lname">LAST NAME *</label>
-                                <input class="input-text input-text--primary-style" placeholder="Last name" onChange={this.onChange} value={this.state.billinglname} type="text" required name="billinglname"/>
+                                <input class="input-text input-text--primary-style" placeholder="Last name" value={this.state.billinglname} type="text" required name="billinglname"/>
                             </div>
                         </div>
                         
                         <div class="u-s-m-b-15">
                             <label class="gl-label" for="billing-email">E-MAIL *</label>
-                            <input class="input-text input-text--primary-style" type="text" required name="billingemail" onChange={this.onChange} value={this.state.billingemail} placeholder="Email address"/>
+                            <input class="input-text input-text--primary-style" type="text" required name="billingemail" value={this.state.billingemail} placeholder="Email address"/>
                         </div>
                         
                         <div class="u-s-m-b-15">
                             <label class="gl-label" for="billing-phone">Mobile *</label>
-                            <input class="input-text input-text--primary-style" type="text" required name="billingphone" onChange={this.onChange} value={this.state.billingphone} placeholder="Mobile number"/>
+                            <input class="input-text input-text--primary-style" type="text" required name="billingphone" value={this.state.billingphone} placeholder="Mobile number"/>
                         </div>
                         
                         <div class="u-s-m-b-15">
-                            <label class="gl-label" for="billing-street">STREET ADDRESS *</label>
-                            <input class="input-text input-text--primary-style" type="text" required onChange={this.onChange} value={this.state.billingstreet} name="billingstreet" placeholder="House name and street name"/>
+                            <label class="gl-label" for="billing-street">ADDRESS *</label>
+                            <input class="input-text input-text--primary-style" type="text" required value={this.state.billingstreet} name="billingstreet" placeholder="House name and street name"/>
                         </div>
 
-                        
-                                                
-                        
-                        <div class="u-s-m-b-10">
-                            <div class="check-box">
-                                <input type="checkbox" name="make-default-address" onChange={this.saveAsDefault}/>
-                                <div class="check-box__state check-box__state--primary">
-                                    <label class="check-box__label" for="make-default-address">Make default delivery address</label>
-                                </div>
-                            </div>
+                        <div class="u-s-m-b-15" style={{marginTop:"30px"}}>
+                            <Link class="btn btn--e-brand-b-2" to="/my-account" >Change Address Details</Link>
                         </div>
 
-                       
-                        <div>
-                            <button class="btn btn--e-transparent-brand-b-2" type="submit">SAVE</button>
-                        </div>
-                    
+
+
                     </div>
-                </form>
+                </div>
             </div>
             </>
         );
     }
 }
+
+const DeliveryInformation = connect(mapStateToProps)(DeliveryInformationView);
 
 export default DeliveryInformation;

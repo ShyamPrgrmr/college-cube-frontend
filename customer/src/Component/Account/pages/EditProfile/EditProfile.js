@@ -1,17 +1,31 @@
 import React,{Component} from 'react';
+import {connect} from 'react-redux';
+import {updateUserData} from './../../../../redux/action/index'
 
-class EditProfile extends Component {
+function mapStateToProps(state){
+    return {
+        fname:state.fname,
+        lname:state.lname,
+        email:state.email,
+        address:state.address,
+        mobile:state.mobile,
+        server:state.server,
+        token:state.token
+    };
+}
+
+function mapDispatchToProps(dispatch){
+    return {updateUserData : data=>{ dispatch( updateUserData(data)); }}
+}
+
+
+class EditProfileView extends Component {
     constructor(props) {
         super(props);
         this.state = { 
             fname:"Shyam",
             lname:"Pradhan",
             email:"123@123.com",
-           
-            gender:"Male",
-            bmonth:"1",
-            bday:1,
-            byear:2002,
             password:"",
             address:"Near Gandhi nagar, Amravati",
             phone:"4433443322"
@@ -19,53 +33,17 @@ class EditProfile extends Component {
     }
 
     componentDidMount=()=>{
-        //API fetch
+        this.setState(
+            {
+                fname:this.props.fname,
+                lname:this.props.lname,
+                email:this.props.email,
+                address:this.props.address,
+                phone:this.props.mobile
+            }
+        )
     }
 
-    getMonth=()=>{
-        return(<>
-            <option value="1" selected>January</option>
-            <option value="2">February</option>
-            <option value="3">March</option>
-            <option value="4">April</option>
-            <option value="5">May</option>
-            <option value="6">June</option>
-            <option value="7">July</option>
-            <option value="8">August</option>
-            <option value="9">September</option>
-            <option value="10">Octomber</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-        </>);
-    }
-
-    getYears=()=>{
-        let year = new Date().getFullYear();
-        let pryear = year - 80;
-        let ret = [];
-        for(let i=pryear;i< (year-16);i++){
-            ret.push(i);
-        }
-        let data = ret.map(y=>{
-            return <option value={""+y}>{y}</option>
-        });
-        return data;
-    }
-
-    DaysInMonth=()=>{
-        return new Date( parseInt(this.state.byear),parseInt(this.state.bmonth),0 ).getDate();
-    }
-
-    getDays=()=>{
-        let num = this.DaysInMonth(); 
-        
-        let arr = [];
-        for(let i=1;i<=num;i++) arr.push(i);
-        let data = arr.map(day=>{
-            return <option value={""+day}>{day}</option>;
-        });
-        return data;
-    }
 
     onChange=(e)=>{
         e.preventDefault()
@@ -76,6 +54,42 @@ class EditProfile extends Component {
 
     onSubmit=(e)=>{
         e.preventDefault();
+        const json = JSON.stringify({
+            name:{
+                firstname:this.state.fname,
+                lastname:this.state.lname
+            },
+            mobile:{
+                mob_1:this.state.phone,
+                mob_2:this.state.phone
+            },
+            address:{
+                route:this.state.address,
+                pincode:444601
+            },
+            token:this.props.token       
+        });
+
+        fetch(this.props.server+"user/updateuserdata",{
+            headers:{
+                "Accept":"Application/json",
+                "Content-type":"Application/json"
+            },
+            method:"PUT",
+            body:json
+        }).then(
+            data=>{
+                if(data.status === 200){
+                    this.props.updateUserData(this.state);
+                    return data.json();
+                }
+            }
+        ).then(
+            data=>{
+                alert("Data updated!");
+            }
+        ).catch(e=>{alert(e)});
+
     }
 
     render() {
@@ -104,40 +118,7 @@ class EditProfile extends Component {
                                                 <input class="input-text input-text--primary-style" type="text" name="lname" placeholder="Last name" value={this.state.lname} onChange={this.onChange}/></div>
                                         </div>
 
-                                        <div class="gl-inline">
-                                            <div class="u-s-m-b-30">
-
-
-                                                <span class="gl-label">BIRTHDAY</span>
-                                                <div class="gl-dob">
-                                                    
-                                                    <select class="select-box select-box--primary-style" onChange={this.onChange} value={this.state.bmonth} name="bmonth" required>    
-                                                        {this.getMonth()}
-                                                    </select>
-                                                    
-                                                    <select class="select-box select-box--primary-style"  onChange={this.onChange} value={this.state.bday} name="bday" required>
-                                                        <option selected disabled>day</option>
-                                                        {this.getDays()}
-                                                    </select>
-                                                    
-                                                    <select class="select-box select-box--primary-style"  onChange={this.onChange} value={this.state.byear} name="byear">
-                                                        <option selected disabled>Year</option>
-                                                        <option value="1991">1991</option>
-                                                        {this.getYears()}
-                                                    </select>
-                                                    
-                                                </div>
-                                            </div>
-                                            <div class="u-s-m-b-30">
-
-                                                <label class="gl-label" for="gender">GENDER</label>
-                                                <select class="select-box select-box--primary-style u-w-100" onChange={this.onChange} value={this.state.gender} name="gender" id="gender" required>
-                                                    <option selected disabled>Select</option>
-                                                    <option value="Male">Male</option>
-                                                    <option value="Female">Female</option>
-                                                </select></div>
-                                        </div>
-
+                                        
 
 
                                         <div class="gl-inline">
@@ -172,4 +153,6 @@ class EditProfile extends Component {
     }
 }
 
+
+const EditProfile = connect(mapStateToProps,mapDispatchToProps)(EditProfileView);
 export default EditProfile;

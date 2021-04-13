@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import { Link, Route, Switch } from 'react-router-dom';
+import { Link, Route, Switch, withRouter } from 'react-router-dom';
 import Footer from './Component/Footer/Footer';
 import Home from './Home/Home';
 import Navbar from './Navbar/Navbar';
@@ -14,9 +14,10 @@ import Checkout from './Component/Checkout/Checkout';
 import Account from './Component/Account/Account';
 import {setlogin} from './redux/action/index';
 import Cookies from 'universal-cookie';
+import ProductDescription from './Component/ProductDescription/ProductDescription';
 
 function mapStateToProps(state){
-  return {state : state };
+  return {state : state,isProductDescription:state.isProductDescription};
 }
 
 function mapDispatchToProps(dispatch){
@@ -31,7 +32,8 @@ class AppContent extends Component{
   }
 
   state={
-    isLoggedIn:false
+    isLoggedIn:false,
+    isProductDescription:""
   }
 
   router=()=>{
@@ -43,6 +45,8 @@ class AppContent extends Component{
         <Route component={Cart} path="/cart" key="Cart"></Route>
         <Route component={Checkout} path="/checkout" key="Checkout"></Route>
         <Route component={Account} path="/my-account" key="my-account"></Route>
+        <Route component={ProductDescription} path="/product-details" key="description"></Route>
+        <Route component={ProductDescription} path="/product-details-more" key="description-1"></Route>
         <Route component={Home} path="/"></Route>
       </Switch>
     );
@@ -87,9 +91,17 @@ class AppContent extends Component{
   
   }
 
+  loadProductDescription=()=>{
+    if(this.state.isProductDescription !=="yes" ){
+      
+    }
+    
+  }
+
   componentDidupdate=()=>{
     if(this.state.isLoggedIn !== this.props.state.isLoggedIn)   
       this.setState({isLoggedIn:this.props.isLoggedIn});
+
   }
 
   render(){
@@ -100,6 +112,7 @@ class AppContent extends Component{
           <div className="app-content">
             <PathView/>
             {this.router()}
+            {this.loadProductDescription()}
           </div>
       </div>
     </>);
@@ -108,4 +121,4 @@ class AppContent extends Component{
 
 const App = connect(mapStateToProps,mapDispatchToProps)(AppContent);
 
-export default App;
+export default withRouter(App);

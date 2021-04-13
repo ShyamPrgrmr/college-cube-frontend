@@ -16,3 +16,9 @@ export const UpdateCart = "UPDATE_CART";
 export const setLogin = "SET_LOGIN";
 
 export const setLogout = "SET_LOGOUT";
+
+export const setDeliveryType = "SET_DELIVERY_TYPE";
+
+export const updateUser = "UPDATE_USER_DATA";
+
+export const loadproductsdescription = "LOAD_PRODUCT_DESCRIPTION";

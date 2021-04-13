@@ -3,6 +3,7 @@ import React,{Component} from 'react';
 import ImageUploader from './ImageUploader/ImageUploader';
 import Cookies from 'universal-cookie';
 import { InputTags } from 'react-bootstrap-tagsinput';
+import AddCategory from './AddCategory/AddCategory';
 
 export default class AddProduct extends Component{
   
@@ -15,11 +16,27 @@ export default class AddProduct extends Component{
     token:"",
     server:"http://localhost:8080/",
     category:"Dal",
-    keywords:[]
+    keywords:[],
+    fil:[]
   };
 
   constructor(props) {
     super(props);
+    this.loadCategoryList();
+  }
+
+  addFilter=(fil)=>{
+    let temp = this.state.fil;
+    temp.push(fil);
+    this.setState({fil:temp});
+  }
+
+  loadCategoryList=()=>{
+    fetch(this.state.server+"shop/getfilters").then(data=>{ if(data.status===200) return data.json(); })
+    .then(data=>{
+      let fil = data.filters;
+      this.setState({fil});
+    });
   }
 
   onNewImgAdd=(src)=>{
@@ -89,18 +106,25 @@ export default class AddProduct extends Component{
     this.setState({[name]:value});
   }
 
+  displayFilters=()=>{
+    let data = this.state.fil.map(d=>{ return(<option value={d}>{d}</option>); });
+    return data;
+  }
+
 
   render(){
-      return( <>     
+      return( <>  
+
+        <AddCategory addCategory={this.addFilter}/>
+
         <div class="col-12 grid-margin stretch-card">
         <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Add Product</h4>
-            
+          <div class="card-body">   
+          <div className="card-title">Add Category</div>
             <div class="forms-sample">
               <div class="form-group">
                 <label>Name</label>
-                <input name="name" onChange={this.onChange} value={ this.state.name} autoFocus type="text" class="form-control" placeholder="Name of product"/>
+                <input name="name" autoFocus onChange={this.onChange} value={ this.state.name} autoFocus type="text" class="form-control" placeholder="Name of product"/>
               </div>
               
               
@@ -142,14 +166,9 @@ export default class AddProduct extends Component{
               <div class="form-group">
                 <label for="category">Category</label>
                   <select class="form-control" name="category" onChange={this.onChange}>
-                    <option value="Dal">Dal</option>
-                    <option value="Oil">Oil</option>
-                    <option value="Personal Care">Personal Care</option>
-                    <option value="Grains">Grains</option>
-                    <option value="Snakes">Snakes</option>
-                    <option value="Dairy">Dairy</option>
-                    <option value="Vegitables">Vegitables</option>
-                    <option value="Drinks">Drinks</option>
+
+                    {this.displayFilters()}
+                  
                   </select>
               </div>
 

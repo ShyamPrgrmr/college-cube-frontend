@@ -1,8 +1,13 @@
 import React,{Component} from 'react';
 import {connect} from 'react-redux';
+import { setDeliveryAction } from './../../../../redux/action/index'
 
 function mapStateToProps(state){
     return {cart : state.cart }
+}
+
+function mapDispatchToProps(dispatch){
+    return { deliveryType : action=>{ dispatch( setDeliveryAction(action) ) } }
 }
 
 class TotalView extends Component {
@@ -58,11 +63,11 @@ class TotalView extends Component {
         return this.state.action === 'delivery'?
         <>
             <span class="js-shop-grid-target is-active">Delivery</span>
-            <span class="js-shop-list-target" onClick={e=>{e.preventDefault(); this.setState({action:'pickup'})}}>Pickup</span>
+            <span class="js-shop-list-target" onClick={e=>{e.preventDefault(); this.setState({action:'pickup'}); this.props.deliveryType("Pickup"); }}>Pickup</span>
         </>
         : 
         <>
-            <span class="js-shop-grid-target" onClick={e=>{e.preventDefault(); this.setState({action:'delivery'})}}>Delivery</span>
+            <span class="js-shop-grid-target" onClick={e=>{e.preventDefault(); this.setState({action:'delivery'}); this.props.deliveryType("Delivery");  }}>Delivery</span>
             <span class="js-shop-list-target is-active">Pickup</span>
         </>
     }
@@ -88,5 +93,5 @@ class TotalView extends Component {
     }
 }
 
-const Total = connect(mapStateToProps)(TotalView);
+const Total = connect(mapStateToProps,mapDispatchToProps)(TotalView);
 export default Total;

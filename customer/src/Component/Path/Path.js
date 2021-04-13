@@ -10,6 +10,9 @@ export function PathView() {
   else{
 
     let chLoc = new String(location.pathname).replace("-"," ").toUpperCase().slice(1);
+    if(chLoc==="PRODUCT DETAILS-MORE"){
+        chLoc = "PRODUCT DETAILS";
+    }
 
     return <>
         <div class="u-s-p-y-60 paddingTopBottomZero">

@@ -5,13 +5,13 @@ import OrderSummary from './OrderSummary/OrderSummary';
 import ReturningUser from './../Auth/ReturningUser/ReturningUser';
 
 function mapStateToProps(state){
-    return {isLoggedIn:state.isLoggedIn,username:state.username,cart:state.cart};
+    return {isLoggedIn:state.isLoggedIn,username:state.username,cart:state.cart,deliveryAction:state.deliveryAction};
 }
 
 class CheckoutView extends Component {
     constructor(props) {
         super(props);
-        this.state = { isLoggedIn:false,cart:[] };
+        this.state = { isLoggedIn:false,cart:[],deliveryAction:"" };
     }
 
 
@@ -20,8 +20,8 @@ class CheckoutView extends Component {
     }
 
     componentDidUpdate=()=>{
-        if(this.state.isLoggedIn != this.props.isLoggedIn){
-            this.setState({isLoggedIn:this.props.isLoggedIn})
+        if(this.state.isLoggedIn != this.props.isLoggedIn || this.state.cart !== this.props.cart || this.state.deliveryAction !=this.props.deliveryAction){
+            this.setState({isLoggedIn:this.props.isLoggedIn,cart:this.props.cart,deliveryAction:this.props.deliveryAction});
         }
     }
 
