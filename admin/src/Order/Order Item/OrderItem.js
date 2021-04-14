@@ -108,12 +108,29 @@ export default class OrderItem extends Component{
                     <tr>
                         <td>{product.name}</td>
                         <td>{product.quantity}</td>
-                        <td>{product.price}</td>
+                        <td>{product.price} Rs.</td>
                     </tr>
                 );
             }
         );
         return tabledata;
+    }
+
+    loadCharges=()=>{
+        if(this.state.ordertype==="Delivery"){
+            return <tr className="total">
+                <td>Delivery Charges</td>
+                <td></td>
+                <td>{5} Rs.</td>
+            </tr>
+        }
+        else if(this.state.ordertype==="Pickup"){
+            return <tr className="total">
+                <td>Delivery Charges</td>
+                <td></td>
+                <td>{0} Rs.</td>
+            </tr>
+        }
     }
 
     render(){
@@ -133,6 +150,7 @@ export default class OrderItem extends Component{
                         <br/>
                          {this.state.usermobile.mob_1}
                     </p>
+                    <p style={{fontSize:"20px",fontWeight:"600",color:"red"}}>Orders Type : {this.state.ordertype}</p>
                 </div>
                 <hr/>
                 <div className="product-list">
@@ -147,8 +165,10 @@ export default class OrderItem extends Component{
                             </thead>
                             <tbody>
                                 {this.loadtable()}
+                                {this.loadCharges()}
                                 <tr className="total">
-                                    <td/><td/><td>Total Amount {" "+this.state.totalprice}</td>
+                                    <td>Total Amount</td><td/>
+                                    <td>{ this.state.ordertype==="Delivery"?( (parseFloat(this.state.totalprice) + 5) ):( this.state.totalprice ) } Rs.</td>
                                 </tr>
                             </tbody>
                         </table>

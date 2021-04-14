@@ -59,7 +59,7 @@ class AppContent extends Component{
 
   checkCoockies=async ()=>{
     let cookies = new Cookies();
-    let token =await cookies.get("token");
+    let token =await cookies.get("tokencustomer");
     
     if(token){
       fetch(this.props.state.server+"user/getuserdata?token="+token).then(

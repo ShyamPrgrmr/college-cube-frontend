@@ -67,7 +67,7 @@ class ReturningUserView extends Component {
                 let now = new Date();
                 now.setTime(now.getTime() + 1 * 3600 * 1000);
                 const cookies = new Cookies();
-                cookies.set('token', udata.token, { path: '/',expires:now });
+                cookies.set('tokencustomer', udata.token, { path: '/',expires:now });
 
                 let username = udata.udata.name.firstname+" "+udata.udata.name.lastname;
                 let address = udata.udata.address.route;

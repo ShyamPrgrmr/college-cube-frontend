@@ -58,7 +58,7 @@ class UserView extends Component{
         <a onClick={(e)=>{e.preventDefault();
           this.props.setlogout("logout"); 
           let cookies = new Cookies();
-          cookies.remove("token");
+          cookies.remove("tokencustomer");
           }}>
           <i class="fas fa-lock-open u-s-m-r-6"></i>
           <span>Signout</span>

@@ -21,26 +21,13 @@ export default class ListItem extends Component{
   }
 
   componentDidMount=()=>{
-    const cookies = new Cookies();
-    const token = cookies.get("token");
-    let price=0;
-
-    fetch(this.state.server+"product/getproductsprice?id="+this.props.data._id+"&token="+token,{
-      method:"GET",
-      headers:{
-        "accept":"application/json"
-      }
-    }).then(data=>{
-      return data.json();
-    }).then(response=>{
-      price = response.price;
+    
       this.setState({
         product:this.props.data,
-        price:price,
+        price:this.props.data.price,
         id:this.props.data._id,
-        previousprice:price
+        previousprice:this.props.data.price
       });
-    });
   }
 
   onChange=(e)=>{
