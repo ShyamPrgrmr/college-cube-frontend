@@ -10,7 +10,14 @@ class Timeline extends Component {
     }
 
     componentDidMount=()=>{
-        this.setState({status:this.props.orderstatus});
+        let orderStatus = parseInt(this.props.orderstatus); 
+        this.setState({status:orderStatus});
+    }
+
+    componentDidUpdate=()=>{
+        if(this.state.status !== this.props.orderstatus){
+            this.setState({status:this.props.orderstatus});
+        }
     }
 
 

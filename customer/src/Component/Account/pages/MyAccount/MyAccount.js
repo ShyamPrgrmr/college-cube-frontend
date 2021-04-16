@@ -2,30 +2,21 @@ import React,{Component} from 'react';
 import {connect} from 'react-redux';
 
 function mapStateToProps(state){
-    return { username:state.username, phone:state.mobile, address:state.address, email:state.email, isLoggedIn : state.isLoggedIn }
+    return { username:state.username,
+             phone:state.mobile,
+             address:state.address, 
+             email:state.email, 
+             isLoggedIn : state.isLoggedIn,
+             server:state.server,
+             token:state.token
+            }
 }
 
 class MyAccountView extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            orders:[
-                {
-                    id:"12345",
-                    date:"12/12/12",
-                    total:120,
-                },
-                {
-                    id:"54395",
-                    date:"12/12/12",
-                    total:170,
-                }
-
-            ],
-            name:"Shyam Pradhan",
-            phone:"8899665511",
-            address:"Near Gandhi nagar, Amravati",
-            email:"qwer@123.com",
+            orders:[],
             orderFilter:"last_5"
          };
     }
@@ -35,23 +26,28 @@ class MyAccountView extends Component {
     onOrderDetailsClick=(e)=>{
         e.preventDefault();
         let id = e.target.name;
-        this.props.loadOrderDetails(id);
+        let ordata = this.state.orders.filter(d=>{
+            if(d._id === id){
+                return true;
+            }
+            return false;
+        })
+        this.props.loadOrderDetails(ordata[0]._id,ordata[0]);
     }
 
 
     loadTable=()=>{
-        let filter = this.state.orderFilter;
-        // API Fetch
+    
         let ret = this.state.orders.map(
             data=>{
                 return (
                     <tr>
-                        <td>{data.id}</td>
+                        <td>{ new String(data._id).toUpperCase().toString() }</td>
                         <td>{data.date}</td>
-                        <td>{data.total} Rs.</td>
+                        <td>{data.totalprice} Rs.</td>
                         <td>
                             <div class="dash__link dash__link--brand">
-                                <a onClick={this.onOrderDetailsClick} name={data.id}>Order Details</a>
+                                <a onClick={this.onOrderDetailsClick} name={data._id}>Order Details</a>
                             </div>
                         </td>
                     </tr>
@@ -68,6 +64,31 @@ class MyAccountView extends Component {
             phone:this.props.phone,
             address:this.props.address,
             email:this.props.email,
+        });
+        this.loadData();
+    }
+
+    loadData=()=>{
+        let filter = this.state.orderFilter;
+        
+        let lastfive = false;
+        let url = this.props.server+"shop/getorders?token="+this.props.token
+
+        if(filter === "lastfive"){
+            url = url + "&lastfive=" + lastfive;
+        }
+        else if(filter === "today"){
+            let date = new Date();
+            let string = date.getFullYear()+"/"+(date.getMonth()+1)+"/"+date.getDate();
+            url = url + "&date=" + string +"&lastfive=" + false;
+        }else{
+            url = url + "&lastfive=" + false;
+        }
+
+        fetch(url).then(data=>{
+            if(data.status===200) return data.json();
+        }).then(data=>{ 
+            this.setState({orders:data});
         })
     }
     
@@ -123,21 +144,9 @@ class MyAccountView extends Component {
                 </div>
                 </div></div>
                 
-                <div class="dash__box dash__box--shadow dash__box--bg-white dash__box--radius">
+                <div class="dash__box dash__box--shadow dash__box--bg-white dash__box--radius" style={{height:"324px",overflowY:"scroll"}}>
                     <h2 class="dash__h2 u-s-p-xy-20">MY ORDERS</h2>
-                    <div class="dash__pad-2">
-                    <div class="m-order__select-wrapper">
-                        <label class="u-s-m-r-8" for="my-order-sort">Show:</label>
-                        <select class="select-box select-box--primary-style" id="my-order-sort" value={this.state.orderFilter} onChange={this.filterOrder}>
-                            <option selected value="last_5">Last 5 orders</option>
-                            <option value="last_15_d">Last 15 days</option>
-                            <option value="last_30_d">Last 30 days</option>
-                            <option value="last_6_m">Last 6 months</option>
-                            <option value="all">All Orders</option>
-                        </select>
-                        </div>
-                    </div>
-
+                   
                     <table class="dash__table">
                         <thead>
                             <tr>

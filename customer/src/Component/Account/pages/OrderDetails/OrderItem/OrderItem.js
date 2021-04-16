@@ -1,25 +1,33 @@
 import React,{Component} from 'react';
 import './OrderItem.css';
+import {connect} from 'react-redux';
+
+function mapStateToProps(state){
+    return {server:state.server}
+}
 
 class OrderItem extends Component {
     constructor(props) {
         super(props);
         this.state = { 
             id:"",
-            name:"Gemini Oil 500gram",
-            quantity:10,
-            price:2,
-            imgsrc:"https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg"
+            name:"",
+            quantity:0,
+            price:0,
+            imgsrc:""
          };
     }
 
     componentDidMount=()=>{
-        this.setState({id:this.props.data.productid,quantity:this.props.data.quantity},this.loadData());
+
+        let id = new String(this.props.data.productid).toUpperCase().toString();
+        let quantity = this.props.data.quantity;
+        let price = this.props.data.price;
+        let imgsrc = this.props.server + this.props.data.imgsrc[0];
+        let name = this.props.data.name;
+        this.setState({name,imgsrc,price,quantity,id});
     }
 
-    loadData=()=>{
-        //api fetch
-    }
 
     render() {
         return (
@@ -41,7 +49,7 @@ class OrderItem extends Component {
                         </div>
                         <div>
                             <span class="manage-o__text-2 u-c-silver">Price: {"  "}
-                                <span class="manage-o__text-2 u-c-secondary">{ parseFloat(this.state.quantity) * parseFloat(this.state.price) } Rs.</span>
+                                <span class="manage-o__text-2 u-c-secondary">{ parseFloat(this.state.price)} Rs.</span>
                             </span>
                         </div>
 
@@ -54,4 +62,4 @@ class OrderItem extends Component {
     }
 }
 
-export default OrderItem;
+export default connect(mapStateToProps)(OrderItem);

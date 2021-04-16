@@ -17,7 +17,7 @@ function mapStateToProps(state){
 class ProfileView extends Component {
     constructor(props) {
         super(props);
-        this.state = { isLoggedIn:false,username:"",page:"account",orderid:"" };
+        this.state = { isLoggedIn:false,username:"",page:"account",orderid:"",orderdata:{} };
     }
 
     componentDidMount=()=>{
@@ -51,8 +51,8 @@ class ProfileView extends Component {
         );
     }
 
-    loadOrderDetails=(id)=>{
-        this.setState({orderid:id,page:"orderdetails"});
+    loadOrderDetails=(id,data)=>{
+        this.setState({orderid:id,page:"orderdetails",orderdata:data});
     }
 
     loadEditProfile=()=>{
@@ -73,7 +73,7 @@ class ProfileView extends Component {
             return <MyOrder loadOrderDetails={this.loadOrderDetails} />
         }
         else if(this.state.page==="orderdetails"){
-            return <OrderDetails id={this.state.orderid}/>
+            return <OrderDetails id={this.state.orderid} data={this.state.orderdata}/>
         }
         else if(this.state.page==="editprofile"){
             return <EditProfile />

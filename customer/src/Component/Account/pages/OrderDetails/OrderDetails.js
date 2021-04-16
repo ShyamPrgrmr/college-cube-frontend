@@ -7,28 +7,13 @@ class OrderDetails extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            id:"",
-            placedOn:"12/12/12 8:45:45",
-            total:30,
-            items:[
-                {
-                    productid:"23123",
-                    quantity:45,
-                    price:60
-                },
-                {
-                    productid:"23123",
-                    quantity:45,
-                    price:50
-                }
-            ],
-            deliverytype:"Delivery",
-            orderstatus:0
-         };
+            order:{}
+        };
     }
 
     loadList=()=>{
-        let data = this.state.items.map(
+        if(!this.state.order.products) return <></>;
+        let data = this.state.order.products.map(
             product=>{
                 return <OrderItem data={product} key={product.productid}></OrderItem>
             }
@@ -38,7 +23,7 @@ class OrderDetails extends Component {
     }
 
     componentDidMount(){
-        this.setState({id:this.props.id});
+        this.setState({order:this.props.data});
     }
 
     render() {
@@ -50,12 +35,12 @@ class OrderDetails extends Component {
                         <div class="dash__pad-2">
                             <div class="dash-l-r">
                                 <div>
-                                    <div class="manage-o__text-2 u-c-secondary">ID: {this.state.id}</div>
-                                    <div class="manage-o__text u-c-silver">Placed on {this.state.placedOn}</div>
+                                    <div class="manage-o__text-2 u-c-secondary">ID: { new String(this.state.order._id).toUpperCase().toString() }</div>
+                                    <div class="manage-o__text u-c-silver">Placed on {this.state.order.date}</div>
                                 </div>
                                 <div>
                                     <div class="manage-o__text-2 u-c-silver">Total:
-                                        <span class="manage-o__text-2 u-c-secondary">{this.state.total} Rs.</span></div>
+                                        <span class="manage-o__text-2 u-c-secondary">{this.state.order.totalprice} Rs.</span></div>
                                 </div>
                             </div>
                         </div>
@@ -70,13 +55,13 @@ class OrderDetails extends Component {
                                 </div>
                                 <div class="dash-l-r"></div>
                                 
-                                <Timeline orderstatus={this.state.orderstatus}/>
+                                <Timeline orderstatus={this.state.order.status}/>
                                 {this.loadList()}
                             </div>
                         </div>
                     </div>
 
-                    <Total deliverytype={this.state.deliverytype} subtotal={this.state.total} />
+                    <Total deliverytype={this.state.order.ordertype} subtotal={this.state.order.totalprice} />
 
                 </div>
             </>
