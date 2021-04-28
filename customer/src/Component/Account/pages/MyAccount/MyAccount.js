@@ -1,5 +1,6 @@
 import React,{Component} from 'react';
 import {connect} from 'react-redux';
+import { getOrders } from '../../../../redux/action';
 
 function mapStateToProps(state){
     return { username:state.username,
@@ -10,6 +11,10 @@ function mapStateToProps(state){
              server:state.server,
              token:state.token
             }
+}
+
+function mapDispatchToProps(dispatch){
+    return {setorders : data => dispatch(getOrders(data)) }
 }
 
 class MyAccountView extends Component {
@@ -89,6 +94,7 @@ class MyAccountView extends Component {
             if(data.status===200) return data.json();
         }).then(data=>{ 
             this.setState({orders:data});
+            this.props.setorders({orders:data});
         })
     }
     
@@ -169,5 +175,5 @@ class MyAccountView extends Component {
 }
 
 
-const MyAccount = connect(mapStateToProps)(MyAccountView);
+const MyAccount = connect(mapStateToProps,mapDispatchToProps)(MyAccountView);
 export default MyAccount;

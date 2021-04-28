@@ -1,22 +1,33 @@
 import React,{Component} from 'react';
 import DoughnutChart from '../../Component/Chart/DoughnutChart';
 import LineChart from '../../Component/Chart/LineChart';
-
+import Cookies from 'universal-cookie';
 export default class Overview extends Component{
     constructor(props){
         super(props);
+
+        let date = new Date();
+        let now = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+
+        this.state={
+            line:{
+            },
+            doughnut:{},
+            date:now,
+            server:"http://localhost:8080/",
+            todaysdata:[]
+        }
     }
+
+    state={}
     
     componentDidMount=()=>{
         this.getLineChartData();
         this.getDoughnutChart();
+        this.loadTodaysData()
     }
 
-    state={
-        line:{
-        },
-        doughnut:{}
-    }
+    
 
     getDoughnutChart=()=>{
         let doughnut = { //Top 5 products sold.
@@ -144,6 +155,54 @@ export default class Overview extends Component{
         else <></>
     }
 
+    getTodaysTotalTable=()=>{
+        let index = 0;
+        let data = this.state.todaysdata.map(item=>{
+            return(<>
+                    <td>{++index}</td>
+                    <td>{item.name}</td>
+                    <td>{item.price} / pcs.</td>
+                    <td>{item.soldquantity} pcs.</td>
+                    <td>{item.stock} pcs</td>
+                    <td>{parseFloat(item.price)*parseFloat(item.soldquantity)} Rs.</td>
+                </>
+            );
+        });
+
+        return data;
+    }
+
+    loadTodaysData=(date_p)=>{
+        let date = date_p || new String(this.state.date);
+        let arr_date = date.split("-");
+        let year = parseInt(arr_date[0]);
+        let month = parseInt(arr_date[1]);
+        let dat = parseInt(arr_date[2]);
+        let now = `${year}/${month}/${dat}`;
+        
+        const cookies = new Cookies();
+        const token = cookies.get("token");
+
+
+        fetch(this.state.server+"admin/getitemsold?token="+token+"&date="+now,{
+            method:"GET",
+            headers:{
+                "Accept":"application/json"
+            },
+        }).then(data=>{
+            if(data.status===200) return data.json();
+            else alert("Error!");
+        }).then(res=>{
+            this.setState(
+                {
+                    todaysdata : res
+                }
+            );
+        }).catch(e=>{
+            console.log(e);
+        })
+    }
+
     render(){
         return(
         <div class="row">
@@ -164,7 +223,37 @@ export default class Overview extends Component{
                     </div>
 
                 </div>
-            
+
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">    
+                            
+                            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                                <div class="card-title">Today's Stock Report</div>
+                                <input type="date" className="form-control" style={{width:"20%"}} value={this.state.date} onChange={e=>{ this.setState({date:e.target.value}); this.loadTodaysData(new String(e.target.value)); }}/>  
+                            </div>
+    
+
+                            <table id="recent-purchases-listing" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name of product</th>
+                                        <th>Price</th>
+                                        <th>Item Sold</th>
+                                        <th>Remaining</th>
+                                        <th>Total Sell</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.getTodaysTotalTable()}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                  </div>
+                </div>
             </div>  
         </div>            
         );

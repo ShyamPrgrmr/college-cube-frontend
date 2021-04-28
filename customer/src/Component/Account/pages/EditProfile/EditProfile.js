@@ -28,7 +28,8 @@ class EditProfileView extends Component {
             email:"123@123.com",
             password:"",
             address:"Near Gandhi nagar, Amravati",
-            phone:"4433443322"
+            phone:"4433443322",
+            oldpassword:""
          };
     }
 
@@ -92,6 +93,24 @@ class EditProfileView extends Component {
 
     }
 
+    onSubmitChangePassword=(e)=>{
+        e.preventDefault();
+        let password = this.state.oldpassword;
+        let json = JSON.stringify({password,token:this.props.token});
+        fetch(this.props.server+"auth/changepassword",
+        {
+            headers:{
+                "Accept":"Application/json",
+                "Content-type":"Application/json"
+            },
+            method:"POST",
+            body:json
+        }).then(data=>{ if(data.status===200) alert("Password Changed Successfully!");}).catch(e=>{
+            alert(e);
+        })
+    }
+
+
     render() {
         return (
             <>
@@ -145,6 +164,31 @@ class EditProfileView extends Component {
                                     </form>
                                 </div>
                             </div>
+
+
+                            <br/>
+                            <h1 class="dash__h1 u-s-m-b-14">Change Your Password</h1>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <form class="dash-edit-p" onSubmit={this.onSubmitChangePassword}>
+                                        
+                                        <div class="gl-inline">
+                                            <div class="u-s-m-b-30">
+
+                                                <label class="gl-label" for="reg-fname">New Password *</label>
+
+                                                <input class="input-text input-text--primary-style" type="text" name="oldpassword" placeholder="Enter New Password" value={this.state.oldpassword} onChange={this.onChange}/>
+                                            </div>
+                                        </div>
+
+                                        <button class="btn btn--e-brand-b-2" type="submit">CHANGE PASSWORD</button>
+                                    </form>
+                                </div>
+                            </div>
+
+
+
+
                         </div>
                     </div>
                 </div>

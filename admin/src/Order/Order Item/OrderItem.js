@@ -107,7 +107,8 @@ export default class OrderItem extends Component{
                 return(
                     <tr>
                         <td>{product.name}</td>
-                        <td>{product.quantity}</td>
+                        <td>{product.quantity } Pcs.</td>
+                        <td>{product.inventory_q} Pcs.</td>
                         <td>{product.price} Rs.</td>
                     </tr>
                 );
@@ -121,6 +122,7 @@ export default class OrderItem extends Component{
             return <tr className="total">
                 <td>Delivery Charges</td>
                 <td></td>
+                <td/>
                 <td>{5} Rs.</td>
             </tr>
         }
@@ -128,6 +130,7 @@ export default class OrderItem extends Component{
             return <tr className="total">
                 <td>Delivery Charges</td>
                 <td></td>
+                <td/>
                 <td>{0} Rs.</td>
             </tr>
         }
@@ -160,14 +163,16 @@ export default class OrderItem extends Component{
                                 <tr>
                                     <th>Product name</th>
                                     <th>Quantity</th>
+                                    <th>Stock Available</th>
                                     <th>Product Price</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
                                 {this.loadtable()}
                                 {this.loadCharges()}
                                 <tr className="total">
-                                    <td>Total Amount</td><td/>
+                                    <td>Total Amount</td><td/><td/>
                                     <td>{ this.state.ordertype==="Delivery"?( (parseFloat(this.state.totalprice) + 5) ):( this.state.totalprice ) } Rs.</td>
                                 </tr>
                             </tbody>

@@ -31,7 +31,8 @@ class SignUpView extends Component{
                 },
                 address:this.state.address,
                 gender:this.state.gender,
-                password:this.state.password
+                password:this.state.password,
+                checktoken:this.state.temptoken
             }
         );
 
@@ -73,7 +74,12 @@ class SignUpView extends Component{
         bday:1,
         byear:2002,
         password:"",
-        address:""
+        address:"",
+        getOTP:false,
+        otp:"",
+        temptoken:0,
+        otpconfirmed:false,
+        btndisabled:false
     }
 
     getMonth=()=>{
@@ -121,6 +127,108 @@ class SignUpView extends Component{
         return data;
     }
 
+    checkOTP=(e)=>{
+        e.preventDefault();
+        let token = this.state.temptoken;
+        let otp = this.state.otp;
+        let json = JSON.stringify({token,otp});
+        fetch(this.props.server+"auth/checkotp",{
+            method:"POST",
+            body:json,
+            headers:{
+                "content-type":"application/json",
+                "accept":"application/json"
+            }
+        }).then(
+            data=>{
+                if(data.status===200){
+                    this.setState({otpconfirmed:true});
+                }else{
+                    alert("Problem in checking otp");
+                }
+            }
+        ).catch(e=>{
+            alert(new Error(e).message);
+        })
+    }
+
+    sendOTP=()=>{
+        
+
+        let token = "TOKEN"+new String((Math.random()*10000000)).substring(0,6)+new Date().toISOString().replace("-","").replace("-","").replace(":","").replace(":","").replace(".","");
+        
+        let email = this.state.email;
+
+        let json = JSON.stringify({
+            email,token
+        });
+
+        fetch(this.props.server+"auth/getotp",{
+            method:"POST",
+            headers:{
+                "Content-type":"application/json",
+                "accept":"application/json"
+            },
+            body:json
+        }).then(data=>{
+            if(data.status===200){this.setState({getOTP:true,temptoken:token});}
+            else alert("Error is occured while sending mail. please try again!");
+        }).catch(e=>{
+            let err = new Error(e);
+            alert(err);
+        })
+    
+    }
+
+    getOtpBtn=()=>{
+        if(!this.state.btndisabled){
+            return <button className="btn btn--e-transparent-brand-b-2" onClick={e=>{e.preventDefault(); this.setState({btndisabled:true});  this.sendOTP(); }}>Get OTP.</button>
+        }
+        else{
+            return <button className="btn btn--e-transparent-brand-b-2" disabled>Sending OTP...</button>
+        }
+    }
+
+    getConfirmBtn=()=>{
+        if(this.state.otpconfirmed){
+            return <button className="btn btn--e-transparent-brand-b-2" disabled>OTP Confirmed.</button>
+        }else{
+            return <button className="btn btn--e-transparent-brand-b-2" onClick={this.checkOTP}>Confirm</button>
+        }
+    }
+
+
+    getOTP=()=>{
+        return !this.state.getOTP ?
+        (<><br/>
+            <div className="row" style={{marginTop:"10px"}}>
+                <div className="col-md-4">
+                    {
+                        this.getOtpBtn()
+                    }
+                    
+                
+                </div>
+            </div>
+        </>):(<>
+            <div className="row" style={{marginTop:"10px"}}>
+                <div className="col-md-3">
+                    <input type="text" className="input-text input-text--primary-style" placeholder="ENTER OTP" value={this.state.otp} onChange={e=>{this.setState({otp:e.target.value})}}></input>
+                </div>
+
+                <div className="col-md-3">
+                
+                    {this.getConfirmBtn()}
+
+                </div>
+                
+                <div className="col-md-6">
+                    <p>Please check spam in case not received the mail.</p>
+                </div>
+            </div>
+            
+        </>)
+    }
 
     render(){
         return(<>    
@@ -177,8 +285,12 @@ class SignUpView extends Component{
 
 
                                     <div class="u-s-m-b-30">
+                                        
                                         <label class="gl-label" for="reg-email">E-MAIL *</label>
                                         <input class="input-text input-text--primary-style" onChange={this.onChange} value={this.state.email} name="email" type="email" autoComplet="on" id="reg-email" placeholder="Enter E-mail" required/>
+                                        
+                                        {this.getOTP()}
+                                   
                                     </div>
 
                                     <div class="u-s-m-b-30">

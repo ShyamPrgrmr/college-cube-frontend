@@ -1,4 +1,5 @@
 import {AddToCart,ClearCart,GetCart,
+    getorders,
     loadproductsdescription,
         RemoveFromCart, setDeliveryType,
         setLogin, setLogout, SetProducts, 
@@ -17,7 +18,8 @@ const initialState = {
     server:"http://localhost:8080/",
     email:"",
     deliveryAction:"Delivery",
-    counter:0
+    counter:0,
+    orders:[]
 };
 
 function rootReducer(state = initialState, action) {
@@ -63,6 +65,12 @@ function rootReducer(state = initialState, action) {
             address:action.payload.address,
             mobile:action.payload.phone,
             username:action.payload.fname+" "+action.payload.lname
+        });
+    }
+
+    if(action.type === getorders){
+        return Object.assign({},state, {
+            orders: action.payload.orders
         });
     }
 

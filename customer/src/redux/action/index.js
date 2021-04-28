@@ -1,7 +1,8 @@
 import {
     AddToCart,ClearCart,GetCart,GetProducts,
     RemoveFromCart, setLogin, setLogout, SetProducts,
-    UpdateCart,setDeliveryType, updateUser, loadproductsdescription
+    UpdateCart,setDeliveryType, updateUser, loadproductsdescription,
+    getorders
 } from './../type/index';
 
 export function addToCart(payload){
@@ -50,4 +51,8 @@ export function updateUserData(payload){
 
 export function loadProductDescription(payload){
     return {type:loadproductsdescription,payload}
+}
+
+export function getOrders(payload){
+    return {type:getorders,payload}
 }

@@ -22,3 +22,5 @@ export const setDeliveryType = "SET_DELIVERY_TYPE";
 export const updateUser = "UPDATE_USER_DATA";
 
 export const loadproductsdescription = "LOAD_PRODUCT_DESCRIPTION";
+
+export const getorders = "GET_ORDERS";

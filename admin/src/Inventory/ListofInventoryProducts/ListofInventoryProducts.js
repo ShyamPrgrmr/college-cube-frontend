@@ -57,8 +57,8 @@ export default class AddInventoryProducts extends Component{
                     <tr>
                         <td>{index}</td>
                         <td>{product.name}</td>
-                        <td>{product.price+"/ Piece"}</td>
-                        <td>{product.quantity+" "}</td>
+                        <td>{product.price+"Rs. / piece"}</td>
+                        <td>{product.quantity+" pieces"}</td>
                         {badge}
                     </tr>
                 );
