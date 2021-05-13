@@ -23,7 +23,7 @@ class CountOrders extends Component {
         let orderPlaced=0;
         let orderCancelled=0;
         for(let order of orders){
-            if(order.status === -1 || order.status === 1 || order.status === 2) orderPlaced++;
+            if(order.status === -1 || order.status === 1 || order.status === 2 || order.status === 3) orderPlaced++;
             if(order.status === 0) orderCancelled++;
         }
 

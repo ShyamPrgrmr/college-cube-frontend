@@ -32,7 +32,8 @@ export default class ListItem extends Component{
         orderid: "",
         orderstatus: 1,
         open:false,
-        serever:"http://localhost:8080/"
+        serever:"http://localhost:8080/",
+        ordertype:false
     };
 
     componentDidMount=()=>{
@@ -61,6 +62,43 @@ export default class ListItem extends Component{
             </div>
     }
 
+    getPricing=()=>{
+        if(this.state.ordertype==="Delivery"){
+            return (
+                <>
+                    <tr className="total">
+                        <td/><td>Total</td><td>{" "+this.state.totalprice+" RS."}</td>
+                    </tr>
+                    <tr className="total">
+                        <td/><td>Delivery Charges</td><td>{" "+ 5 +" RS"}</td>
+                    </tr>
+
+                    <tr className="total">
+                        <td/><td>Total Price</td><td>{" "+(this.state.totalprice+5)+" RS."}</td>
+                    </tr>
+                
+                </>
+            );
+        }else{
+            return (
+                <>
+                    <tr className="total">
+                        <td/><td>Total</td><td>{" "+this.state.totalprice+" RS."}</td>
+                    </tr>
+                    <tr className="total">
+                        <td/><td>Delivery Charges</td><td>{" "+ 0 +" RS"}</td>
+                    </tr>
+
+                    <tr className="total">
+                        <td/><td>Total Price</td><td>{" "+(this.state.totalprice)+" RS."}</td>
+                    </tr>
+                
+                </>
+            );
+        }
+
+    }
+
     loadContent=()=>{
         return( 
         <div class="card card-body d-flex flex-column">
@@ -84,12 +122,10 @@ export default class ListItem extends Component{
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            {this.loadTable()}
-                        </tr>
-                        <tr className="total">
-                            <td/><td/><td>Total Amount {" "+this.state.totalprice}</td>
-                        </tr>
+                        
+                        {this.loadTable()}
+                        
+                        {this.getPricing()}
                     </tbody>
                 </table>            
             </div>
@@ -108,7 +144,7 @@ export default class ListItem extends Component{
     loadTable=()=>{
         let data = this.state.products.map(product=>{
             return (
-                <>
+                <tr>
                     <td>
                         {product.name}
                     </td>
@@ -118,7 +154,7 @@ export default class ListItem extends Component{
                     <td>
                         {product.price}
                     </td>
-                </>
+                </tr>
             );
         })
 

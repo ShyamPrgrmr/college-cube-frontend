@@ -15,25 +15,62 @@ export default class Overview extends Component{
             doughnut:{},
             date:now,
             server:"http://localhost:8080/",
-            todaysdata:[]
+            todaysdata:[],
+            label:["","","","",""],
+            qty:[0,0,0,0,0]
         }
     }
 
     state={}
     
     componentDidMount=()=>{
+        this.loadPie()
         this.getLineChartData();
-        this.getDoughnutChart();
         this.loadTodaysData()
     }
 
-    
+    loadPie=()=>{
+
+        let label=[];
+        let qty=[];
+        const cookies = new Cookies();
+        const token = cookies.get("token");
+
+        fetch("http://localhost:8080/admin/getpeichartdata?token="+token).then(
+            data=>{
+                if(data.status===200) return data.json();
+            }
+        ).then(data=>{
+            data.forEach(element => {
+                label.push(element.name);
+                qty.push(element.qty);
+            });
+        })
+
+        
+    }
 
     getDoughnutChart=()=>{
+
+        let label = [] ;
+        let qty = [] ;
+        const cookies = new Cookies();
+        const token = cookies.get("token");
+
+        fetch("http://localhost:8080/admin/getpeichartdata?token="+token).then(
+            data=>{
+                if(data.status===200) return data.json();
+            }
+        ).then(data=>{
+            data.forEach(element => {
+                label.push(element.name);
+                qty.push(element.qty);
+            });
+        })
+        
         let doughnut = { //Top 5 products sold.
             data:{
-                labels: ['Rambandhu Papad Aata', 'Ambari 500 gram', 'Gemini oil 500 gram',
-                        'Gemini Oil 1kg', 'Suruchi 500 gram'],
+                labels:label,
                 datasets: [
                     {
                     label: 'Top 5 Sold Products of This Week.',
@@ -51,7 +88,7 @@ export default class Overview extends Component{
                     '#003350',
                     '#35014F'
                     ],
-                    data: [65, 59, 80, 81, 56]
+                    data:qty
                     }
                 ]
             },
@@ -67,11 +104,14 @@ export default class Overview extends Component{
                     display:true,
                     position:'right'
                 }
-                  
+                    
             }      
         }
 
-        this.setState({doughnut:doughnut});
+        return <DoughnutChart data={doughnut.data} options={doughnut.options} />
+        
+    
+    
     }
 
     getLineChartData=()=>{
@@ -150,7 +190,7 @@ export default class Overview extends Component{
 
     showDoughnutChart=()=>{
         if(this.state.doughnut.data){
-            return <DoughnutChart data={this.state.doughnut.data} options={this.state.doughnut.options} />
+            return <></>
         }
         else <></>
     }
@@ -158,14 +198,14 @@ export default class Overview extends Component{
     getTodaysTotalTable=()=>{
         let index = 0;
         let data = this.state.todaysdata.map(item=>{
-            return(<>
+            return(<tr>
                     <td>{++index}</td>
                     <td>{item.name}</td>
                     <td>{item.price} / pcs.</td>
                     <td>{item.soldquantity} pcs.</td>
                     <td>{item.stock} pcs</td>
                     <td>{parseFloat(item.price)*parseFloat(item.soldquantity)} Rs.</td>
-                </>
+                </tr>
             );
         });
 
@@ -218,7 +258,7 @@ export default class Overview extends Component{
                 
                     <div class="col-md-6 grid-margin">
                         <div className="card card-body">
-                            {this.showDoughnutChart()}
+                            {this.getDoughnutChart()}
                         </div>
                     </div>
 

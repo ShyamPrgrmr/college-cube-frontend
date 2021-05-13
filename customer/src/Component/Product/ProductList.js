@@ -26,7 +26,33 @@ class ListView extends Component{
 
   loadProductList=()=>{
 
-    fetch(this.props.state.server+"shop/getproductbyfilter?filter="+this.props.filter+"&page="+this.state.page,{
+    let id = this.props.id;
+
+    fetch(`http://127.0.0.1:8000/getrecommenditem?id=${id}`,{
+      headers:{
+        "content-type":"Application/json",
+        "accept":"Application/json"
+      },
+      method:"GET"
+    }).then(data=>{
+      return data.json();
+    }).then(data=>{
+      let json = JSON.stringify(data);
+      fetch(this.props.state.server+"admin/getrecommended",{
+        headers:{
+          "content-type":"Application/json",
+          "accept":"Application/json"
+        },
+        method:"POST",
+        body:json
+      }).then(data=>{
+        if(data.status===200) return data.json();
+      }).then(data=>{
+        this.setState({ products:data.products });
+      })
+    })
+
+    /*fetch(this.props.state.server+"shop/getproductbyfilter?filter="+this.props.filter+"&page="+this.state.page,{
         headers:{
             "content-type":"Application/json",
             "accept":"Application/json"
@@ -39,7 +65,8 @@ class ListView extends Component{
     }).then(data=>{
         this.setState({products:data.products});
     }).catch(e=>{alert(e)});
-  
+    */
+    
 }
 
   componentDidMount=()=>{
@@ -47,7 +74,6 @@ class ListView extends Component{
   }
 
   fetchNewPage=(page)=>{
-      let filter = this.state.selectedFilter;
       fetch(this.props.state.server+"shop/getproductbyfilter?filter="+this.state.selectedFilter+"&page="+page,{
         headers:{
             "content-type":"Application/json",

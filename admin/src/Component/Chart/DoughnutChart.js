@@ -5,13 +5,18 @@ export default class DoughnutChart extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = props;
+    this.state={
+      data:{},
+      options:{}
+    }
   }
 
   componentDidMount() {      
+    this.setState({...this.props})
   }
 
   componentDidUpdate(){
+    
   }
 
   render(){

@@ -117,8 +117,9 @@ class ProductDescriptionView extends Component {
     }
 
     loadProductList=()=>{
+        let id = this.state.product.id;
         if(!this.state.product.category) return <></>
-        else return <ProductList filter={this.state.product.category}/>
+        else return <ProductList filter={this.state.product.category} id={id}/>
     }
 
 
