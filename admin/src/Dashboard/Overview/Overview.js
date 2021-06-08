@@ -250,15 +250,16 @@ export default class Overview extends Component{
               
                 <div class="row">
                 
-                    <div class="col-md-6 grid-margin">
-                        <div className="card card-body">
-                            {this.showLineChart()}
-                        </div>
-                    </div>
-                
-                    <div class="col-md-6 grid-margin">
-                        <div className="card card-body">
-                            {this.getDoughnutChart()}
+
+                    <div class="col-md-12 grid-margin">
+                        <div className="row" style={{backgroundColor:"white"}}>
+                            <div className="col-md-3"/>
+                                <div className="col-md-6">
+                                    <div className="card card-body">
+                                    {this.getDoughnutChart()}
+                                </div>
+                                <div className="col-md-3"/>
+                            </div>
                         </div>
                     </div>
 
@@ -271,7 +272,7 @@ export default class Overview extends Component{
                             
                             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
                                 <div class="card-title">Today's Stock Report</div>
-                                <input type="date" className="form-control" style={{width:"20%"}} value={this.state.date} onChange={e=>{ this.setState({date:e.target.value}); this.loadTodaysData(new String(e.target.value)); }}/>  
+                                 
                             </div>
     
 
